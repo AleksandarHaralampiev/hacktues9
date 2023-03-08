@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 
@@ -40,8 +40,29 @@ def register():
         db.session.commit()
     return render_template('register.html')
 
-@app.route("/login", methods=['POST', "GET"])
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+
+        email = request.form['email']
+        password = request.form['password']
+
+        remember = request.form.get('remember')
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            return render_template('login.html', message="Invalid Creditals")
+        hash_password = hashlib.sha256(password.encode()).hexdigest()
+        if hash_password == user.password:
+            if remember:
+                resp = make_response(render_template('home.html'))
+                resp.set_cookie('username', email)
+                resp.set_cookie('password', password)
+                return resp
+            else:
+                return render_template('home.html')
+    else:
+        return render_template('login.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
