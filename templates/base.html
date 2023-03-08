@@ -10,43 +10,46 @@
     </head>
     
     <body style="background-color: black;">
-        <nav class="navbar navbar-expand-lg navbar-light transparent">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="home.html">
-                    <img src="../static/images/logo.png" height="40px">
-                    <span class="mx-0 link-light">Data Exotica</span>
-                </a>
-              <button class="navbar-toggler background-color white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link active link-light" aria-current="page" href="#">Password Manager</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link link-light" href="#">Lectures</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link link-light">Tools</a>
-                  </li>
-                </ul>
-              
-                <ul class="navbar-nav ms-auto">
-                  <li class="nav-item">
-                    <a class="nav-link link-light" href="#">Sign In</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link link-light" href="#">Register</a>
-                  </li>
-                </ul>
-              </div>
-              
-            </div>
-          </nav>
-          {% block content %}
-          {% endblock %}
-           <!-- Optional JavaScript; choose one of the two! -->
+        
+        {% block navbar %}
+            <nav class="navbar navbar-expand-lg navbar-light transparent">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="home.html">
+                        <img src="../static/images/logo.png" height="40px">
+                        <span class="mx-0 link-light">Data Exotica</span>
+                    </a>
+                <button class="navbar-toggler background-color white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active link-light" aria-current="page" href="#">Password Manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-light" href="#">Lectures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-light">Tools</a>
+                    </li>
+                    </ul>
+                
+                    <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link link-light" href="#">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-light" href="#">Register</a>
+                    </li>
+                    </ul>
+                </div>
+                
+                </div>
+            </nav>
+        {% endblock %}
+        {% block content %}
+        {% endblock %}
+        <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
