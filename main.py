@@ -14,8 +14,16 @@ class User(db.Model):
     email = db.Column(db.String(), unique = True, nullable = False)
     username = db.Column(db.String(), unique = True, nullable = False)
     password = db.Column(db.String(), nullable = False)
+    
+class Combo(db.Model):
+    __tablename__ = 'combo'
+    id = db.Column(db.Integer(), primary_key = True)
+    combo_username = db.Column(db.String(), nullable = False, unique = True)
+    combo_password = db.Column(db.String(), nullable = False, unique = True)
+    combo_website = db.Column(db.String(), nullable = False, unique = True)
 
 @app.route('/')
+@app.route('/home')
 def home():
     email = session.get('email')
     if email:
@@ -70,6 +78,18 @@ def login():
             return render_template('login.html', message="Invalid Credentials")
     else:
         return render_template('login.html')
+    
+@app.route('/manager', methods=['GET', 'POST'])
+def password_manager():
+    if request.method == 'POST':
+        combo_username = request.form['username']
+        combo_password= request.form['password']
+        combo_website = request.form['website']
+        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
+        db.session.add(combo)
+        db.session.commit()
+    return render_template('password_manager.html')
+
 
 
 
