@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 
@@ -51,24 +51,26 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    email = session.get('email')
+    if email:
+        return redirect(url_for('profile'))
     if request.method == 'POST':
-
         email = request.form['email']
         password = request.form['password']
-
-        remember = request.form.get('remember')
+        remember = request.form.get('remember', False)
+        session['remember'] = remember
         user = User.query.filter_by(email=email).first()
         if user is None:
-            return render_template('login.html', message="Invalid Creditals")
+            return render_template('login.html', message="Invalid Credentials")
         hash_password = hashlib.sha256(password.encode()).hexdigest()
         if hash_password == user.password:
+            session['email'] = email
+            session['password'] = password
             if remember:
-                resp = make_response(render_template('home.html'))
-                resp.set_cookie('username', email)
-                resp.set_cookie('password', password)
-                return resp
-            else:
-                return render_template('home.html')
+                session.permanent = True
+            return redirect(url_for('profile'))
+        else:
+            return render_template('login.html', message="Invalid Credentials")
     else:
         return render_template('login.html')
     
@@ -84,5 +86,25 @@ def password_manager():
     return render_template('password_manager.html')
 
 
+
+@app.route('/profile')
+def profile():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
+    else:
+        user = User.query.filter_by(email=email).first()
+        return render_template('profile.html', email=email)
+    
+
+@app.route('/logout')
+def left():
+    session.pop("email", None)
+    session.pop("remember", None)
+    session.pop("password", None)
+    return redirect('/')
 if __name__ == "__main__":
     app.run(debug=True)
+
