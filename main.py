@@ -17,7 +17,11 @@ class User(db.Model):
 
 @app.route('/')
 def home():
+    email = session.get('email')
+    if email:
+        return redirect(url_for('profile'))
     return render_template('home.html')
+
 
 @app.route('/register', methods = ["POST", "GET"])
 def register():
@@ -39,6 +43,7 @@ def register():
         db.session.add(user)
         db.session.commit()
     return render_template('register.html')
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -67,6 +72,7 @@ def login():
         return render_template('login.html')
 
 
+
 @app.route('/profile')
 def profile():
     email = session.get('email')
@@ -78,6 +84,10 @@ def profile():
         user = User.query.filter_by(email=email).first()
         return render_template('profile.html', email=email)
     
+@app.route('/lectures')
+def lectures():
+    return render_template('lectures.html')
+
 
 @app.route('/logout')
 def left():
