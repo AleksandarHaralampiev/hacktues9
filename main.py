@@ -1,18 +1,20 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import random
 import string
-=======
-=======
->>>>>>> b074cd985376528e408b3a4052d2a32baaca2aeb
+
 import os
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
+
+
+email_sender = 'dataexotica@gmail.com'
+email_password = 'atyocjltnmhlprgx'
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -42,6 +44,7 @@ def home():
     if email:
         return redirect(url_for('profile'))
     return render_template('home.html')
+
 
 
 @app.route('/register', methods = ["POST", "GET"])
@@ -155,7 +158,75 @@ def password_generator():
 
 
     return render_template('password_generator.html')
+@app.route('/passowrd_cheecker', methods=["POST", "GET"])
+def password_checker():
+    if request.method == 'POST':
+        
+        password = request.form.get('password', '')
+        upperCase = [1 if c in string.ascii_uppercase else 0 for c in password]
+        lowerCase = [1 if c in string.ascii_lowercase else 0 for c in password]
+        special = [1 if c in string.punctuation else 0 for c in password]
+        numbers = [1 if c in string.digits else 0 for c in password]
+        characters = [upperCase, lowerCase, special, numbers]
+        length = len(password)
+        
+        score = 0
+        
+        # Check if password is in common list
+        
+        with open("commonPasswords.txt", "r") as f:
+            commonPasswords = f.read().splitlines()
+        
+   
+        # Add score for the length of the password
+        
+        if length > 8:
+            score += 1
+        
+        if length > 12:
+            score += 1
+        
+        if length > 16:
+            score += 1
+        
+        if length > 20:
+            score += 2
+        
+        # Add score for the number of different characters
+        
+        if sum(characters[0]) > 1:
+            score += 1
+        
+        if sum(characters[1]) > 2:
+            score += 1
+        
+        if sum(characters[2]) > 1:
+            score += 2
+        
+        if sum(characters[3]) > 1:
+            score += 1
+        
 
+        message = "Please enter a password"
+        if password in commonPasswords:
+            score = 0
+        
+        if score < 4:
+            message = "The password is quite weak" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score == 4:
+             message = "The password is ok" + str(score) + "/10"
+             return render_template('password_checker.html', message=message)
+        elif score == 5:
+            message = "The password is good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score < 8:
+            message = "The password is very good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score <= 10:
+            message = "The password is very strong" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+    return render_template('password_checker.html')
 
 @app.route('/profile')
 def profile():
@@ -171,6 +242,8 @@ def profile():
 @app.route('/lectures')
 def lectures():
     return render_template('lectures.html')
+
+
 
 @app.route('/lectures_1')
 def lecture_1():
