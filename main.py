@@ -2,21 +2,18 @@ from flask import Flask, render_template, request, make_response, redirect, url_
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 <<<<<<< HEAD
+<<<<<<< HEAD
 import random
 import string
 =======
+=======
+>>>>>>> b074cd985376528e408b3a4052d2a32baaca2aeb
 import os
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
 
-#2fa configuration
-
-email_sender = 'dataexotica@gmail.com'
-email_password = 'atyocjltnmhlprgx'
-
->>>>>>> b074cd985376528e408b3a4052d2a32baaca2aeb
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
