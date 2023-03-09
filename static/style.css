@@ -1,3 +1,7 @@
+body{
+    background-color: #1f242d;
+}
+
 .background-image {
     background-image: url(images/background.png);
 }
@@ -39,7 +43,7 @@
 
 
 .href-color{
-    color: #535353 !important;
+    color: #3e3e3e !important;
     transition: .5s;
 }
 
@@ -47,10 +51,8 @@
 .login-card{
     background: rgba(0, 0, 0, 0.1);
     
-    border: 5px solid #333;
+    border: 5px solid #6d6d6d;
     border-radius: 10px;
-
-    transition: .5s;
 
     box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
@@ -79,14 +81,48 @@
     color: #0ef !important;
 }
 
-.login-card h1{
+.login-card .header{
     color: white;
 }
 
-.login-card:hover h1{
+.login-card:hover .header{
     color: #0ef;
 }
 
-h1{
-    transition: .5s;
+.header{
+    transition: 0.5s;
+}
+
+
+
+
+
+.info-card{
+    background: #323946;
+    
+    border-radius: 15px;
+
+    transition: 0.5s;
+}
+
+.info-card:hover{
+    border: 2px solid #0ef;
+}
+
+.info-card:hover .header{
+    color: #0ef;    
+}
+
+.info-button{
+    background-color: #0ef;
+    box-shadow: 0 0 10px #0ef;
+
+    font-size: 20px;
+    color: white;
+
+    border: none;
+}
+
+.info-button:hover{
+    background-color: #0ef;
 }

@@ -6,66 +6,73 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    
+        <link rel="stylesheet" href="../static/style.css">
     </head>
     
-    <body style="overflow: hidden;">
-        <div id="particles-js" style="height: 90vh;">
-        <nav class="navbar navbar-expand-lg navbar-light transparent sticky-top">
+    <body style="overflow: auto;">
+        
+      <div class="vh-100 d-flex flex-column align-items-center justify-content-center text-white">  
+        <nav class="w-100 navbar navbar-expand-lg navbar-dark bg-transparent position-absolute top-0">
+              
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{url_for('home')}}">
-                    <img src="../static/images/logo_black.png" height="40px">
-                    <span class="mx-0 ">Data Exotica</span>
-                </a>
-              <button class="navbar-toggler background-color white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse dropdown bg-transparent" id="navbarNav">
-                <ul class="navbar-nav">
-                  <div class="dropdown">
-                    <a class="btn bg-transparent dropdown-toggle text-black border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Passwords
-                    </a>
-                  
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{{url_for('password_generator')}}">Password generator</a></li>
-                      <li><a class="dropdown-item" href="{{url_for('password_checker')}}">Password chechker</a></li>
-                      <li><a class="dropdown-item" href="#">Password manager</a></li>
-                    </ul>
-                  </div>
-                  <div class="dropdown">
-                    <a class="btn bg-transparent dropdown-toggle text-black border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Tools
-                    </a>
-                  
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">DNS Lookup</a></li>
-                      <li><a class="dropdown-item" href="#">Link Checkup</a></li>
-                      <li><a class="dropdown-item" href="#">Email Blacklist</a></li>
-                    </ul>
-                  </div>
-                  <div class="dropdown">
-                    <a class="btn bg-transparent  text-black border-0"  href="{{url_for('lectures')}}" role="button" >
-                      Lectures
-                    </a>
-                  </div>
+                  <a class="navbar-brand" href="{{url_for('home')}}">
+                      <img src="../static/images/logo.png" height="40px">
+                      <span class="mx-0 ">Data Exotica</span>
+                  </a>
+                
+                  <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                
+                  <div class="collapse navbar-collapse dropdown bg-transparent d-flex flex-row justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav">
+                      <div class="dropdown">
+                        <a class="btn bg-transparent dropdown-toggle text-white border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Passwords
+                        </a>
+                      
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{{url_for('password_generator')}}">Password generator</a></li>
+                          <li><a class="dropdown-item" href="{{url_for('password_checker')}}">Password chechker</a></li>
+                          <li><a class="dropdown-item" href="#">Password manager</a></li>
+                        </ul>
+                      </div>
+                      <div class="dropdown">
+                        <a class="btn bg-transparent dropdown-toggle text-white border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Tools
+                        </a>
+                      
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#">DNS Lookup</a></li>
+                          <li><a class="dropdown-item" href="#">Link Checkup</a></li>
+                          <li><a class="dropdown-item" href="#">Email Blacklist</a></li>
+                        </ul>
+                      </div>
+                      <div class="dropdown">
+                        <a class="btn bg-transparent  text-white border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Lectures
+                        </a>
+                      </div>
 
-                </ul>
-              
-                <ul class="navbar-nav ms-auto">
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('left')}}">Sign Out</a>
-                  </li>
+                    </ul>
+                  
+                    <ul class="navbar-nav ms-auto">
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('left')}}">Sign Out</a>
+                      </li>
 
-                </ul>
+                    </ul>
+                </div>
+                
               </div>
-              
-            </div>
-          </nav>
+        </nav>
           {% block content %}
           {% endblock %}
 
            <!-- Optional JavaScript; choose one of the two! -->
            <!-- Option 1: Bootstrap Bundle with Popper -->
+      </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
