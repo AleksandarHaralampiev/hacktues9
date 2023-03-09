@@ -3,7 +3,9 @@ body{
 }
 
 .background-image {
-    background-image: url(images/bcg.bmp);
+
+    /*background-image: url(images/test.jpg);*/
+    background-color: #1f242d;
     background-size: cover;
     background-repeat: no-repeat;
 }
