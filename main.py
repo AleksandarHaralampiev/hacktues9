@@ -137,7 +137,13 @@ def profile():
 def lectures():
     return render_template('lectures.html')
 
+@app.route('/lectures_1')
+def lecture_1():
+    return render_template('lecture_1.html')
 
+@app.route('/phishing')
+def phishing():
+    return render_template('phishing.html')
 @app.route('/logout')
 def left():
     session.pop("email", None)
