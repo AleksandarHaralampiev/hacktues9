@@ -269,6 +269,18 @@ def verification():
 def lectures():
     return render_template('lectures.html')
 
+@app.route('/phishing_1', methods=['GET', 'POST'])
+def phishing_1():
+    if request.method == 'POST':
+        login_email = request.form['login_email']
+        login_password = request.form['login_password']
+        session['login_email'] = login_email
+        session['login_password'] = login_password
+        
+        
+        
+    return render_template('visualization.html')
+
 
 
 @app.route('/lectures_1')
