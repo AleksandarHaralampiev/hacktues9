@@ -1,40 +1,28 @@
+#importing libraries
 from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 import hashlib
+import requests
+from bs4 import BeautifulSoup
+import json
+import string
 import os
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
-import requests
-from bs4 import BeautifulSoup
-import json
-from urllib.parse import urlparse
-from cryptography.fernet import Fernet
 
 #2fa configuration
 
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
 
-import random
-import string
-
-import os
-from email.message import EmailMessage
-import ssl
-import smtplib
-import random
-
-
-email_sender = 'dataexotica@gmail.com'
-email_password = 'atyocjltnmhlprgx'
-key = Fernet.generate_key()
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 db = SQLAlchemy(app)
 
 # Models
@@ -45,14 +33,12 @@ class User(db.Model):
     username = db.Column(db.String(), unique = True, nullable = False)
     password = db.Column(db.String(), nullable = False)
     
-class Password(db.Model):
-    __tablename__ = 'password'
+class Combo(db.Model):
+    __tablename__ = 'combo'
     id = db.Column(db.Integer(), primary_key = True)
-    user = db.Column(db.String(), nullable = False)
-    user_password = db.Column(db.String(), nullable = False)
-    website = db.Column(db.String(), nullable = False)
-
-
+    combo_username = db.Column(db.String(), nullable = False, unique = True)
+    combo_password = db.Column(db.String(), nullable = False, unique = True)
+    combo_website = db.Column(db.String(), nullable = False, unique = True)
 
 # Routes
 @app.route('/')
@@ -94,6 +80,7 @@ def login():
     if email:
         return redirect(url_for('verification'))
     if request.method == 'POST':
+        #2fa
         email = request.form['email']
         email_receiver = email
         code = random.randint(100000, 999999)
@@ -113,6 +100,7 @@ def login():
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
             server.login(email_sender, email_password)
             server.sendmail(email_sender, email_receiver, em.as_string())
+        #2fa end
         password = request.form['password']
         remember = request.form.get('remember', False)
         session['remember'] = remember
@@ -125,6 +113,8 @@ def login():
             session['password'] = password
             if remember:
                 session.permanent = True
+            else:
+                session.permanent = False  # set session to expire after browser is closed
             return redirect(url_for('verification'))
         else:
             return render_template('login.html', message="Invalid Credentials")
@@ -134,13 +124,25 @@ def login():
 
 
 
+
+
+@app.route('/manager', methods=['GET', 'POST'])
+def password_manager():
+    if request.method == 'POST':
+        combo_username = request.form['username']
+        combo_password= request.form['password']
+        combo_website = request.form['website']
+        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
+        db.session.add(combo)
+        db.session.commit()
+    return render_template('password_manager.html')
+
+
+
+
 @app.route('/password_generator', methods=['POST', 'GET'])
 def password_generator():
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
+
     if request.method == 'POST':
         chars = ""
         length = request.form.get('length', default = 12)
@@ -170,11 +172,7 @@ def password_generator():
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
 
 def password_checker():
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
+
     if request.method == 'POST':
             score = 0
             password = request.form.get('password', '')
@@ -270,10 +268,7 @@ def phishing_1():
         login_email = request.form['login_email']
         login_password = request.form['login_password']
         session['login_email'] = login_email
-        session['login_password'] = login_password
-        
-        
-        
+        session['login_password'] = login_password     
     return render_template('visualization.html')
 
 
@@ -294,41 +289,6 @@ def left():
     session.pop("remember", None)
     session.pop("password", None)
     return redirect('/')
-
-
-@app.route('/manager')
-def manager():
-    user_email = session['email']
-    passwords = Password.query.filter_by(user=user_email).all()
-    return render_template('password_manager.html', passwords=passwords)
-
-@app.route('/add_pass', methods = ["GET", "POST"])
-def addpass():
-        if 'email' not in session:
-                return redirect(url_for('login'))
-        if request.method == 'POST':
-                user = session['email']
-                password = request.form['password']
-                website = request.form['website']
-                parsed_url = urlparse(website)
-                user_obj = User.query.filter_by(email=user).first()
-                if not user_obj:
-                    flash('Unauthorized access')
-                    return redirect(url_for('manager'))
-        
-                if parsed_url.scheme and parsed_url.netloc:
-                    password = Password(user=user, user_password=password, website=website)
-                    db.session.add(password)
-                    db.session.commit()
-                    return redirect(url_for('manager'))
-                else:
-                    flash('Invalid website URL')
-        return render_template('add_password.html')
-
-
-@app.route('/visualization')
-def visualization():
-    return render_template('visualization.html')
 
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():

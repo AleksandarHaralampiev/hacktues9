@@ -8,11 +8,27 @@ body{
     background-repeat: no-repeat;
 }
 
-#particles-js {
+#particle-container {
+    position: relative;
     width: 100%;
-    height: 90vh;
-  }
+    height: 100vh;
+}
 
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+  
+  .login-card {
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
 
 .input-field{
     background: transparent;
@@ -22,7 +38,6 @@ body{
 .input-field::placeholder{
     color: white;
 }
-
 
 
 
