@@ -1,0 +1,17 @@
+{% extends 'profile.html' %}
+{% block content %}
+
+<div class="container w-100 vh-100 d-flex justify-content-center flex-column " style="overflow: hidden;">
+    <br><br>
+    <h1 align="center">Lecture 1</h1>
+    <br>
+    <br>
+    <h3 align="center">Phishing Attack</h3>
+    <br><br>
+    <p align="center">Phishing is a type of cyber attack that involves tricking individuals into providing sensitive information such as passwords, credit card details, or other personal information.<br> Attackers usually send fake emails or messages that appear to be from a trustworthy source, such as a bank or a popular online service, and ask users to provide sensitive information by clicking on a link or opening an attachment.</p>
+    <a href="{{url_for('phishing')}}" style="text-decoration: none;">
+        <button type="button" class="btn btn-dark d-block mx-auto" style="width: 200px;" >Start Simulation</button>
+    </a>
+    
+</div>
+{% endblock %}
