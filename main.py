@@ -123,7 +123,18 @@ def login():
     
 
 
-
+@app.route('/verification', methods=['GET', 'POST'])
+def verification():
+    if request.method == 'POST':
+        code = int(request.form['code'])
+        if code == session['code']:
+            session['verified'] = True  # set verified flag
+            return redirect(url_for('profile'))
+        else:
+            flash('Invalid Code')
+            return render_template('verification.html')
+    else:
+        return render_template('auth.html')
 
 
 @app.route('/manager', methods=['GET', 'POST'])
@@ -235,28 +246,28 @@ def password_checker():
 
 @app.route('/profile')
 def profile():
-    
     email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
-    else:
-        user = User.query.filter_by(email=email).first()
-        return render_template('profile.html', email=email)
+    if not email:
+        return redirect(url_for('login'))
 
-@app.route('/verification', methods=['GET', 'POST'])
-def verification():
-    print("hello world")
-    if request.method == 'POST':
-        code= int(request.form['code'])
-        if code == (session['code']):
-            return redirect(url_for('profile'))
-        else:   
-            flash('Invalid Code')
-            return render_template('auth.html')
-    else:
-        return render_template('auth.html')
+    user = User.query.filter_by(email=email).first()
+    combos = Combo.query.all()
+
+    if session.get('verified') == True:
+        return render_template('profile.html', username=user.username, combos=combos)
+
+    return redirect(url_for('verification'))
+
+def is_authenticated():
+    email = session.get('email')
+    verified = session.get('verified')
+    if email and verified:
+        return True
+    return False
+
+
+
+
     
 @app.route('/lectures')
 def lectures():
