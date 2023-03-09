@@ -27,18 +27,18 @@
                             
                         <input required type="text" id="email" placeholder="Email" class="input-field form-control rounded-pill p-3 mb-3" name="email">
 
-                        <input required type="text" id="email" placeholder="Username" class="input-field form-control rounded-pill p-3 mb-3" name="username">
+                        <input required type="text" id="username" placeholder="Username" class="input-field form-control rounded-pill p-3 mb-3" name="username">
 
                         <input required type="password" id="password" placeholder="Password" class="input-field form-control rounded-pill p-3 mb-3" name="password">
 
-                        <input required type="password" id="password" placeholder="Confirm Password" class="input-field form-control rounded-pill p-3 mb-3" name="confirm_password">
+                        <input required type="password" id="confirm_password" placeholder="Confirm Password" class="input-field form-control rounded-pill p-3 mb-3" name="confirm_password">
                             
                         <button type="submit" class="submit-button text-white rounded-pill w-100 p-3">Sign up</button>
                     </form>
 
                     <div class="text-center mt-1">
                         <span><i>Already have an account? </span>
-                        <a href="{{url_for('register')}}" class="href-color text-white text-decoration-none">Log in!</i></a>
+                        <a href="{{url_for('login')}}" class="href-color text-white text-decoration-none">Log in!</i></a>
                     </div>
                 </div>
             </div>
