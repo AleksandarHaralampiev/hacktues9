@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, redirect, url_for, session
+from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 import os
@@ -69,7 +69,7 @@ def register():
 def login():
     email = session.get('email')
     if email:
-        return redirect(url_for('profile'))
+        return redirect(url_for('verification'))
     if request.method == 'POST':
         email = request.form['email']
         email_receiver = email
@@ -102,7 +102,7 @@ def login():
             session['password'] = password
             if remember:
                 session.permanent = True
-            return redirect(url_for('profile'))
+            return redirect(url_for('verification'))
         else:
             return render_template('login.html', message="Invalid Credentials")
     else:
@@ -124,6 +124,7 @@ def password_manager():
 
 @app.route('/profile')
 def profile():
+    
     email = session.get('email')
     remember = session.get('remember')
     if email is None:
@@ -132,6 +133,19 @@ def profile():
     else:
         user = User.query.filter_by(email=email).first()
         return render_template('profile.html', email=email)
+
+@app.route('/verification', methods=['GET', 'POST'])
+def verification():
+    print("hello world")
+    if request.method == 'POST':
+        code= int(request.form['code'])
+        if code == (session['code']):
+            return redirect(url_for('profile'))
+        else:   
+            flash('Invalid Code')
+            return render_template('auth.html')
+    else:
+        return render_template('auth.html')
     
 @app.route('/lectures')
 def lectures():
@@ -144,12 +158,18 @@ def lecture_1():
 @app.route('/phishing')
 def phishing():
     return render_template('phishing.html')
+
+
 @app.route('/logout')
 def left():
     session.pop("email", None)
     session.pop("remember", None)
     session.pop("password", None)
     return redirect('/')
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
