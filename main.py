@@ -103,18 +103,25 @@ def password_manager():
 def password_generator():
     if request.method == 'POST':
         chars = ""
+        length = request.form.get('length', default = 12)
+        length = int(length)
         uppercase = request.form.get('uppercase', False)
         lowercase = request.form.get('lowercase', False)
         numbers = request.form.get('numbers', False)
         symbols = request.form.get('symbols', False)
         if uppercase != False:
-            chars = chars + asciuppercase
+            chars += string.ascii_uppercase
         if lowercase != False:
-            chars = chars + lowercase
+            chars += string.ascii_lowercase
         if numbers != False:
-            chars = chars + string.digits
+            chars += string.digits
         if symbols != False:
-            chars = chars + string.punctuation
+            chars += string.punctuation 
+        if chars == "":
+            message = "Something went wrong"
+            return render_template('password_generator.html', message=message)
+        password = ''.join(random.choices(chars, k=length))
+        return render_template('password_generator.html', password=password)
 
 
     return render_template('password_generator.html')
