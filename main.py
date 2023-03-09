@@ -1,6 +1,16 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
+import os
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
+
+#2fa configuration
+
+email_sender = 'dataexotica@gmail.com'
+email_password = 'atyocjltnmhlprgx'
 
 import random
 import string
