@@ -1,6 +1,16 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
+import os
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
+
+#2fa configuration
+
+email_sender = 'dataexotica@gmail.com'
+email_password = 'atyocjltnmhlprgx'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -22,6 +32,7 @@ class Combo(db.Model):
     combo_password = db.Column(db.String(), nullable = False, unique = True)
     combo_website = db.Column(db.String(), nullable = False, unique = True)
 
+# Routes
 @app.route('/')
 @app.route('/home')
 def home():
@@ -61,6 +72,24 @@ def login():
         return redirect(url_for('profile'))
     if request.method == 'POST':
         email = request.form['email']
+        email_receiver = email
+        code = random.randint(100000, 999999)
+        session['code'] = code  # store code in session
+
+        subject = 'Verification Code'
+        body = f'Your verification code is \n{code}'
+
+        em = EmailMessage()
+        em['From'] = email_sender
+        em['To'] = email_receiver
+        em['Subject'] = subject
+        em.set_content(body)
+
+        context = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
+            server.login(email_sender, email_password)
+            server.sendmail(email_sender, email_receiver, em.as_string())
         password = request.form['password']
         remember = request.form.get('remember', False)
         session['remember'] = remember

@@ -1,5 +1,5 @@
-body {
-    background-color: #1f242d;
+.background-image {
+    background-image: url(images/background.png);
 }
 
 #particles-js {
