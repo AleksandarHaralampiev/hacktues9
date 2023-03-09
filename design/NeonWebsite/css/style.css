@@ -81,8 +81,21 @@ section{
     align-items: center;
 }
 
-.home-ing img{
-    width: 35vh;
+.home-img img{
+    width: 35vw;
+    animation: floatImage 4s infinite;
+}
+
+@keyframes floatImage{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-5rem);
+    }
+    100%{
+        transform: translateY(0);
+    }
 }
 
 .home-content h3{
