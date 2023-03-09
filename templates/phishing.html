@@ -1,21 +1,29 @@
 {% extends 'profile.html' %}
 {% block content %}
 
-	<div class="container">
-		<h1>Test Email</h1>
-		<p>This is an example of an HTML email using Bootstrap 5.</p>
-		<div class="row">
-			<div class="col-md-6">
-				<h2>Column 1</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sed nunc urna. Vestibulum vel elit non ante sollicitudin rutrum.</p>
+<body>
+    <div style="height: 100vh; display: flex;justify-content: center; align-items: center;">
+	<div class="container" >
+		<div class="row" >
+			<div class="col-md-1">
+				<img src="../static/images/user_phishing.png" alt="Gmail Logo" width="80px">
 			</div>
-			<div class="col-md-6">
-				<h2>Column 2</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sed nunc urna. Vestibulum vel elit non ante sollicitudin rutrum.</p>
+			<div class="col-md-7">
+				<h3>Congratulations! You've won $50!</h3>
+				<p>From: <a href="#" style="text-decoration: none;">noreply@revolot.com</a></p>
+				<p>To: <a href="#" style="text-decoration: none;">Me</a></p>
 			</div>
 		</div>
-		<p>Thank you for reading!</p>
+		<hr>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Dear Recipient,</p>
+				<p>Congratulations! You're a lucky winner!<br>You have been chosen to receive a $50 reward, but they need to take immediate action to claim it.<br><a href="{{url_for('visualization')}}">Sign in</a> to the Revolut website, because this offer is only available for a limited time! </p>
+				<p>Best regards,<br>Revolut</p>
+			</div>
+		</div>
 	</div>
+</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

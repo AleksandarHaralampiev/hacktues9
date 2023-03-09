@@ -238,6 +238,8 @@ def password_checker():
             return render_template('password_checker.html', message=message)
     return render_template('password_checker.html')
 
+
+
 @app.route('/profile')
 def profile():
     
@@ -275,6 +277,7 @@ def lecture_1():
 
 @app.route('/phishing')
 def phishing():
+
     return render_template('phishing.html')
 
 
@@ -285,8 +288,9 @@ def left():
     session.pop("password", None)
     return redirect('/')
 
-
-
+@app.route('/visualization')
+def visualization():
+    return render_template('visualization.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
