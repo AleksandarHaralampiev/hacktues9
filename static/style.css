@@ -7,19 +7,86 @@
     height: 90vh;
   }
 
-  .login-card{
-    background: rgba(255, 255, 255, 0.01);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
 
-    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
-}
+
 
 .input-field{
-    background: rgba(255, 255, 255, 0.3);
+    background: transparent;
+    border: 2px solid #333;
 }
 
 .input-field::placeholder{
     color: white;
+}
+
+
+
+
+.card-body{
+    transition: .5s;
+}
+
+
+.submit-button{
+    background: #545454;
+    border: 2px solid #333;
+
+    color: white;
+
+    transition: .5s;
+}
+
+
+
+.href-color{
+    color: #535353 !important;
+    transition: .5s;
+}
+
+
+.login-card{
+    background: rgba(0, 0, 0, 0.1);
+    
+    border: 5px solid #333;
+    border-radius: 10px;
+
+    transition: .5s;
+
+    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+
+.login-card:hover{
+    border: 5px solid #0ef;
+
+    box-shadow: 0 0 20px #0ef, inset 0 0 20px #0ef;
+}
+
+.login-card:hover .input-field{
+    border: 2px solid #0ef;
+    box-shadow: 0 0 10px #0ef, inset 0 0 10px #0ef;
+}
+
+.login-card:hover .submit-button{
+    background-color: #0ef;
+    box-shadow: 0 0 10px #0ef, inset 0 0 10px #0ef;
+
+    border: none;
+}
+
+.login-card:hover .href-color{
+    color: #0ef !important;
+}
+
+.login-card h1{
+    color: white;
+}
+
+.login-card:hover h1{
+    color: #0ef;
+}
+
+h1{
+    transition: .5s;
 }
