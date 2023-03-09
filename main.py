@@ -1,29 +1,19 @@
+#importing libraries
 from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 import hashlib
-import os
-from email.message import EmailMessage
-import ssl
-import smtplib
-import random
 import requests
 from bs4 import BeautifulSoup
 import json
-
-#2fa configuration
-
-email_sender = 'dataexotica@gmail.com'
-email_password = 'atyocjltnmhlprgx'
-
-import random
 import string
-
 import os
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
 
+#2fa configuration
 
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
@@ -32,6 +22,7 @@ email_password = 'atyocjltnmhlprgx'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 db = SQLAlchemy(app)
 
 # Models
@@ -89,6 +80,7 @@ def login():
     if email:
         return redirect(url_for('verification'))
     if request.method == 'POST':
+        #2fa
         email = request.form['email']
         email_receiver = email
         code = random.randint(100000, 999999)
@@ -108,6 +100,7 @@ def login():
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
             server.login(email_sender, email_password)
             server.sendmail(email_sender, email_receiver, em.as_string())
+        #2fa end
         password = request.form['password']
         remember = request.form.get('remember', False)
         session['remember'] = remember
@@ -120,6 +113,8 @@ def login():
             session['password'] = password
             if remember:
                 session.permanent = True
+            else:
+                session.permanent = False  # set session to expire after browser is closed
             return redirect(url_for('verification'))
         else:
             return render_template('login.html', message="Invalid Credentials")
@@ -128,7 +123,18 @@ def login():
     
 
 
-
+@app.route('/verification', methods=['GET', 'POST'])
+def verification():
+    if request.method == 'POST':
+        code = int(request.form['code'])
+        if code == session['code']:
+            session['verified'] = True  # set verified flag
+            return redirect(url_for('profile'))
+        else:
+            flash('Invalid Code')
+            return render_template('verification.html')
+    else:
+        return render_template('auth.html')
 
 
 @app.route('/manager', methods=['GET', 'POST'])
@@ -147,6 +153,7 @@ def password_manager():
 
 @app.route('/password_generator', methods=['POST', 'GET'])
 def password_generator():
+
     if request.method == 'POST':
         chars = ""
         length = request.form.get('length', default = 12)
@@ -163,6 +170,8 @@ def password_generator():
             chars += string.digits
         if symbols != False:
             chars += string.punctuation 
+
+
         if chars == "":
             message = "Something went wrong"
             return render_template('password_generator.html', message=message)
@@ -172,101 +181,93 @@ def password_generator():
 
     return render_template('password_generator.html')
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
-def password_checker():
-    if request.method == 'POST':
-        
-        password = request.form.get('password', '')
-        upperCase = [1 if c in string.ascii_uppercase else 0 for c in password]
-        lowerCase = [1 if c in string.ascii_lowercase else 0 for c in password]
-        special = [1 if c in string.punctuation else 0 for c in password]
-        numbers = [1 if c in string.digits else 0 for c in password]
-        characters = [upperCase, lowerCase, special, numbers]
-        length = len(password)
-        
-        score = 0
-        
-        # Check if password is in common list
-        
-        with open("commonPasswords.txt", "r") as f:
-            commonPasswords = f.read().splitlines()
-        
-   
-        # Add score for the length of the password
-        
-        if length > 8:
-            score += 1
-        
-        if length > 12:
-            score += 1
-        
-        if length > 16:
-            score += 1
-        
-        if length > 20:
-            score += 2
-        
-        # Add score for the number of different characters
-        
-        if sum(characters[0]) > 1:
-            score += 1
-        
-        if sum(characters[1]) > 2:
-            score += 1
-        
-        if sum(characters[2]) > 1:
-            score += 2
-        
-        if sum(characters[3]) > 1:
-            score += 1
-        
 
-        message = "Please enter a password"
-        if password in commonPasswords:
+def password_checker():
+
+    if request.method == 'POST':
             score = 0
-        
-        if score < 4:
-            message = "The password is quite weak" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score == 4:
-             message = "The password is ok" + str(score) + "/10"
-             return render_template('password_checker.html', message=message)
-        elif score == 5:
-            message = "The password is good" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score < 8:
-            message = "The password is very good" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score <= 10:
-            message = "The password is very strong" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
+            password = request.form.get('password', '')
+            if password == None:
+                return render_template('password_checker.html')
+            if len(password) < 12:
+                score += 1
+            elif len(password) >= 12:
+                score += 3
+        # Check for presence of numbers, uppercase and lowercase letters
+            has_digit = False
+            has_uppercase = False
+            has_lowercase = False
+            for char in password:
+                if char.isdigit():
+                    has_digit = True
+                elif char.isupper():
+                    has_uppercase = True
+                elif char.islower():
+                    has_lowercase = True
+    
+            # Check if all character types are present
+            if has_digit and has_uppercase and has_lowercase:
+                score += 3
+            elif (has_digit and has_uppercase) or (has_digit and has_lowercase) or (has_uppercase and has_lowercase):
+                score += 2
+            elif has_digit or has_uppercase or has_lowercase:
+                score += 1
+    
+            # Add bonus points for special characters
+            special_characters = "!@#$%^&*()-_=+[]{};:'\"<>,.?\\|/"
+            has_special = False
+            for char in password:
+                if char in special_characters:
+                    has_special = True
+                    break
+            if has_special:
+                score += 4
+            
+            if (score <= 3):
+                message = "The password is weak"
+                emoji = "😭"
+            elif(score <= 7):
+                message = "The password is good"
+                emoji = "😐"
+            elif (score <= 9):
+                message = "The password is strong"
+                emoji = "😀"
+            elif(score == 10):
+                message = "The password is really strong"
+                emoji = "💪"
+            # Map score to a 1-10 scale
+            width = score * 10
+            width = str(width) + "%"
+            return render_template('password_checker.html', score=score, message=message, width=width,emoji=emoji)
     return render_template('password_checker.html')
+
 
 
 
 @app.route('/profile')
 def profile():
-    
     email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
-    else:
-        user = User.query.filter_by(email=email).first()
-        return render_template('profile.html', email=email)
+    if not email:
+        return redirect(url_for('login'))
 
-@app.route('/verification', methods=['GET', 'POST'])
-def verification():
-    print("hello world")
-    if request.method == 'POST':
-        code= int(request.form['code'])
-        if code == (session['code']):
-            return redirect(url_for('profile'))
-        else:   
-            flash('Invalid Code')
-            return render_template('auth.html')
-    else:
-        return render_template('auth.html')
+    user = User.query.filter_by(email=email).first()
+    combos = Combo.query.all()
+
+    if session.get('verified') == True:
+        return render_template('profile.html', username=user.username, combos=combos)
+
+    return redirect(url_for('verification'))
+
+def is_authenticated():
+    email = session.get('email')
+    verified = session.get('verified')
+    if email and verified:
+        return True
+    return False
+
+
+
+
     
 @app.route('/lectures')
 def lectures():
@@ -278,10 +279,7 @@ def phishing_1():
         login_email = request.form['login_email']
         login_password = request.form['login_password']
         session['login_email'] = login_email
-        session['login_password'] = login_password
-        
-        
-        
+        session['login_password'] = login_password     
     return render_template('visualization.html')
 
 
@@ -302,10 +300,6 @@ def left():
     session.pop("remember", None)
     session.pop("password", None)
     return redirect('/')
-
-@app.route('/visualization')
-def visualization():
-    return render_template('visualization.html')
 
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():
