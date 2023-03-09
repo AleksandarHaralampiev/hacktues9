@@ -16,12 +16,11 @@
         <div class="vh-100 container-fluid d-flex align-items-center justify-content-center background-image overflow-auto">       <!--container-->
                 
                 
-            <div class="login-card mt-5 mb-3 mx-3 text-center p-4 rounded-4 w-50 text-white d-flex align-items-center">      <!--card itself-->
-                <img src="../static/images/user.png" width="150" class="mx-auto position-absolute top-0 start-50 translate-middle"> <!--pfp-->
+            <div class="login-card mt-5 mb-3 mx-3 text-center p-4 w-50 text-white d-flex align-items-center">      <!--card itself-->
                 
                 <div class="card-body my-4">
                         
-                    <div class="d-flex flex-column my-3">
+                    <div class="d-flex flex-column my-3 href-color">
                         <h1 class="mb-0">Welcome back!</h1>
                         <span class="text-danger">{{message}}</span>
                     </div>
@@ -33,29 +32,19 @@
                         <!--password-->
                         <input required type="text" id="password" name="password" placeholder="Password" class="input-field form-control rounded-pill mt-3 p-3" name="email">
 
-                        <!--forgot password and remember me-->
-                            <!--small-->
-                        <div class="d-flex d-sm-none flex-column justify-content-center my-3 text-start">            
+                        <!--forgot password-->
 
-                            <div class="text-center">
-                                <a href="#" class="text-white text-decoration-none">Forgot password?</i></a>
-                            </div>
-                        </div>
-                            
-                            <!--above small-->
-                        <div class="d-none d-sm-flex flex-row justify-content-between px-3 pt-1 text-start">            
-                            <div class="text-center">
-                                <a href="#" class="text-white text-decoration-none" >Forgot password?</i></a>
-                            </div>
-                        </div>
+                        <a href="#" class="text-decoration-none text-end pe-4 text-white">Forgot password</a>
+            
+    
 
                         <!--submit button-->
-                        <button type="submit" class="btn bg-black text-white rounded-pill w-100 p-3">Sign in</button>
+                        <button type="submit" class="submit-button rounded-pill w-100 mt-3 p-3">Sign in</button>
                     </form>
 
-                    <div class="text-center">
+                    <div class="text-center mt-1">
                         <span><i>Don't have an account yet? </span>
-                        <a href="{{url_for('register')}}" class="text-white text-decoration-none">Sign up!</i></a>
+                        <a href="{{url_for('register')}}" class="text-decoration-none href-color">Sign up!</i></a>
                     </div>
                 </div>
             </div>
