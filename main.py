@@ -12,6 +12,20 @@ import random
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
 
+import random
+import string
+
+import os
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
+
+
+email_sender = 'dataexotica@gmail.com'
+email_password = 'atyocjltnmhlprgx'
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
@@ -40,6 +54,7 @@ def home():
     if email:
         return redirect(url_for('profile'))
     return render_template('home.html')
+
 
 
 @app.route('/register', methods = ["POST", "GET"])
@@ -108,6 +123,11 @@ def login():
     else:
         return render_template('login.html')
     
+
+
+
+
+
 @app.route('/manager', methods=['GET', 'POST'])
 def password_manager():
     if request.method == 'POST':
@@ -121,6 +141,102 @@ def password_manager():
 
 
 
+
+@app.route('/password_generator', methods=['POST', 'GET'])
+def password_generator():
+    if request.method == 'POST':
+        chars = ""
+        length = request.form.get('length', default = 12)
+        length = int(length)
+        uppercase = request.form.get('uppercase', False)
+        lowercase = request.form.get('lowercase', False)
+        numbers = request.form.get('numbers', False)
+        symbols = request.form.get('symbols', False)
+        if uppercase != False:
+            chars += string.ascii_uppercase
+        if lowercase != False:
+            chars += string.ascii_lowercase
+        if numbers != False:
+            chars += string.digits
+        if symbols != False:
+            chars += string.punctuation 
+        if chars == "":
+            message = "Something went wrong"
+            return render_template('password_generator.html', message=message)
+        password = ''.join(random.choices(chars, k=length))
+        return render_template('password_generator.html', password=password)
+
+
+    return render_template('password_generator.html')
+@app.route('/passowrd_cheecker', methods=["POST", "GET"])
+def password_checker():
+    if request.method == 'POST':
+        
+        password = request.form.get('password', '')
+        upperCase = [1 if c in string.ascii_uppercase else 0 for c in password]
+        lowerCase = [1 if c in string.ascii_lowercase else 0 for c in password]
+        special = [1 if c in string.punctuation else 0 for c in password]
+        numbers = [1 if c in string.digits else 0 for c in password]
+        characters = [upperCase, lowerCase, special, numbers]
+        length = len(password)
+        
+        score = 0
+        
+        # Check if password is in common list
+        
+        with open("commonPasswords.txt", "r") as f:
+            commonPasswords = f.read().splitlines()
+        
+   
+        # Add score for the length of the password
+        
+        if length > 8:
+            score += 1
+        
+        if length > 12:
+            score += 1
+        
+        if length > 16:
+            score += 1
+        
+        if length > 20:
+            score += 2
+        
+        # Add score for the number of different characters
+        
+        if sum(characters[0]) > 1:
+            score += 1
+        
+        if sum(characters[1]) > 2:
+            score += 1
+        
+        if sum(characters[2]) > 1:
+            score += 2
+        
+        if sum(characters[3]) > 1:
+            score += 1
+        
+
+        message = "Please enter a password"
+        if password in commonPasswords:
+            score = 0
+        
+        if score < 4:
+            message = "The password is quite weak" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score == 4:
+             message = "The password is ok" + str(score) + "/10"
+             return render_template('password_checker.html', message=message)
+        elif score == 5:
+            message = "The password is good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score < 8:
+            message = "The password is very good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score <= 10:
+            message = "The password is very strong" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+    return render_template('password_checker.html')
 
 @app.route('/profile')
 def profile():
@@ -150,6 +266,8 @@ def verification():
 @app.route('/lectures')
 def lectures():
     return render_template('lectures.html')
+
+
 
 @app.route('/lectures_1')
 def lecture_1():
