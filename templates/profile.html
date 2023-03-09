@@ -35,7 +35,7 @@
                         <ul class="dropdown-menu">
                           <li><a class="dropdown-item" href="{{url_for('password_generator')}}">Password generator</a></li>
                           <li><a class="dropdown-item" href="{{url_for('password_checker')}}">Password chechker</a></li>
-                          <li><a class="dropdown-item" href="#">Password manager</a></li>
+                          <li><a class="dropdown-item" href="{{url_for('manager')}}">Password manager</a></li>
                         </ul>
                       </div>
                       <div class="dropdown">
@@ -45,14 +45,18 @@
                       
                         <ul class="dropdown-menu">
                           <li><a class="dropdown-item" href="#">DNS Lookup</a></li>
-                          <li><a class="dropdown-item" href="#">Link Checkup</a></li>
+                          <li><a class="dropdown-item" href="{{url_for('check_link')}}">Link Checkup</a></li>
                           <li><a class="dropdown-item" href="#">Email Blacklist</a></li>
                         </ul>
                       </div>
                       <div class="dropdown">
-                        <a class="btn bg-transparent  text-white border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="btn bg-transparent dropdown-toggle text-white border-0"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                           Lectures
                         </a>
+                      
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{{url_for('lecture_1')}}">Phishing Attack</a></li>
+                        </ul>
                       </div>
 
                     </ul>

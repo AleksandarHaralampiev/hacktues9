@@ -9,6 +9,8 @@ import random
 import requests
 from bs4 import BeautifulSoup
 import json
+from urllib.parse import urlparse
+from cryptography.fernet import Fernet
 
 #2fa configuration
 
@@ -27,6 +29,7 @@ import random
 
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
+key = Fernet.generate_key()
 
 
 app = Flask(__name__)
@@ -42,12 +45,14 @@ class User(db.Model):
     username = db.Column(db.String(), unique = True, nullable = False)
     password = db.Column(db.String(), nullable = False)
     
-class Combo(db.Model):
-    __tablename__ = 'combo'
+class Password(db.Model):
+    __tablename__ = 'password'
     id = db.Column(db.Integer(), primary_key = True)
-    combo_username = db.Column(db.String(), nullable = False, unique = True)
-    combo_password = db.Column(db.String(), nullable = False, unique = True)
-    combo_website = db.Column(db.String(), nullable = False, unique = True)
+    user = db.Column(db.String(), nullable = False)
+    user_password = db.Column(db.String(), nullable = False)
+    website = db.Column(db.String(), nullable = False)
+
+
 
 # Routes
 @app.route('/')
@@ -129,25 +134,13 @@ def login():
 
 
 
-
-
-@app.route('/manager', methods=['GET', 'POST'])
-def password_manager():
-    if request.method == 'POST':
-        combo_username = request.form['username']
-        combo_password= request.form['password']
-        combo_website = request.form['website']
-        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
-        db.session.add(combo)
-        db.session.commit()
-    return render_template('password_manager.html')
-
-
-
-
 @app.route('/password_generator', methods=['POST', 'GET'])
 def password_generator():
-
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         chars = ""
         length = request.form.get('length', default = 12)
@@ -177,7 +170,11 @@ def password_generator():
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
 
 def password_checker():
-
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
             score = 0
             password = request.form.get('password', '')
@@ -297,6 +294,37 @@ def left():
     session.pop("remember", None)
     session.pop("password", None)
     return redirect('/')
+
+
+@app.route('/manager')
+def manager():
+    user_email = session['email']
+    passwords = Password.query.filter_by(user=user_email).all()
+    return render_template('password_manager.html', passwords=passwords)
+
+@app.route('/add_pass', methods = ["GET", "POST"])
+def addpass():
+        if 'email' not in session:
+                return redirect(url_for('login'))
+        if request.method == 'POST':
+                user = session['email']
+                password = request.form['password']
+                website = request.form['website']
+                parsed_url = urlparse(website)
+                user_obj = User.query.filter_by(email=user).first()
+                if not user_obj:
+                    flash('Unauthorized access')
+                    return redirect(url_for('manager'))
+        
+                if parsed_url.scheme and parsed_url.netloc:
+                    password = Password(user=user, user_password=password, website=website)
+                    db.session.add(password)
+                    db.session.commit()
+                    return redirect(url_for('manager'))
+                else:
+                    flash('Invalid website URL')
+        return render_template('add_password.html')
+
 
 @app.route('/visualization')
 def visualization():
