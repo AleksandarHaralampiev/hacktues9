@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
-
+import random
+import string
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
@@ -79,6 +80,11 @@ def login():
     else:
         return render_template('login.html')
     
+
+
+
+
+
 @app.route('/manager', methods=['GET', 'POST'])
 def password_manager():
     if request.method == 'POST':
@@ -91,6 +97,27 @@ def password_manager():
     return render_template('password_manager.html')
 
 
+
+
+@app.route('/password_generator', methods=['POST', 'GET'])
+def password_generator():
+    if request.method == 'POST':
+        chars = ""
+        uppercase = request.form.get('uppercase', False)
+        lowercase = request.form.get('lowercase', False)
+        numbers = request.form.get('numbers', False)
+        symbols = request.form.get('symbols', False)
+        if uppercase != False:
+            chars = chars + asciuppercase
+        if lowercase != False:
+            chars = chars + lowercase
+        if numbers != False:
+            chars = chars + string.digits
+        if symbols != False:
+            chars = chars + string.punctuation
+
+
+    return render_template('password_generator.html')
 
 
 @app.route('/profile')
