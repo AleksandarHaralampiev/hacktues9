@@ -15,9 +15,8 @@
         <div class="container-fluid d-flex align-items-center justify-content-center vh-100 background-image">
 
             <div class="login-card mt-5 mb-3 mx-3 p-4 w-50 text-center text-white rounded-4"> <!--card-->
-                <img src="../static/images/user.png" width="150" class="mx-auto position-absolute top-0 start-50 translate-middle">
-
-                <div class="card-body my-5">
+                
+                <div class="card-body my-4">
 
                     <div class="d-flex flex-column mb-3">
                         <h1 class="mb-0">Make an account</h1>
@@ -34,12 +33,12 @@
 
                         <input required type="password" id="password" placeholder="Confirm Password" class="input-field form-control rounded-pill p-3 mb-3" name="confirm_password">
                             
-                        <button type="submit" class="btn bg-black text-white rounded-pill w-100 p-3">Sign up</button>
+                        <button type="submit" class="submit-button text-white rounded-pill w-100 p-3">Sign up</button>
                     </form>
 
                     <div class="text-center mt-1">
                         <span><i>Already have an account? </span>
-                        <a href="{{url_for('register')}}" class="text-white text-decoration-none">Log in!</i></a>
+                        <a href="{{url_for('register')}}" class="href-color text-white text-decoration-none">Log in!</i></a>
                     </div>
                 </div>
             </div>
