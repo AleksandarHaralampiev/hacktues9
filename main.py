@@ -6,6 +6,9 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 import random
+import requests
+from bs4 import BeautifulSoup
+import json
 
 #2fa configuration
 
@@ -291,6 +294,52 @@ def left():
 @app.route('/visualization')
 def visualization():
     return render_template('visualization.html')
+
+@app.route('/linkcheckup', methods=['GET', 'POST'])
+def check_link():
+    if request.method == 'POST':
+        url = request.form.get('url')
+        headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
+
+        mxtoolbox_url = f'https://api.geekflare.com/dnsrecord'
+        payloat = {
+            'url':url
+        }
+        response = requests.post(mxtoolbox_url, json=payloat, headers=headers)
+        
+        # soup = BeautifulSoup(response.text, 'html.parser')
+        # result_div = soup.find('', {'': ''})
+        
+        
+        output = response.json()
+        
+        # result_div = output
+        apiCode = output['apiCode']
+        if apiCode == 404:
+            # return
+            print("error 404")
+            
+        result_ip = output['data']['A'][0]['address']
+        result_ttl = output['data']['A'][0]['ttl']
+        result_txt = output['data']['TXT']
+        result_txt_output = []
+        for txt in output['data']['TXT']:
+            result_txt_output.append(txt)
+        
+        if result_ip is not None:
+            result_text = result_ip
+        else:
+            result_text = 'No results found.'
+            
+        if result_ttl is not None:
+            result_text_one = result_ttl
+        else:
+            result_text_one = 'No results found.'
+
+        result_div= None
+        return render_template('link_checkup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+
+    return render_template('link_checkup.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
