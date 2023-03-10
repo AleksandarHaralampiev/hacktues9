@@ -1,0 +1,24 @@
+{% extends 'profile.html' %}
+{% block content %}
+<div class="container" style="border: 0px solid;height: 80vh;">
+  <a href="{{url_for('addpass')}}">
+    <button type="submit" class="btn btn-secondary" name="add">Add Password</button>
+  </a>
+  
+  <div class="row my-5">
+    {% for item in items %}
+      <div class="col-4">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title text-dark">{{ item.website }}</h3>
+            <h4 class="card-text text-dark">{{ item.username }}</h4>
+            <h4 class="card-text text-dark" type="password">{{ item.password }}</h4>
+            <a href="#" class="btn btn-primary">View</a>
+          </div>
+        </div>
+        <br>
+      </div>
+    {% endfor %}
+  </div>
+  
+{% endblock %}
