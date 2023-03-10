@@ -458,7 +458,7 @@ def blacklist():
 
         return render_template('blacklist.html', package=package)
 
-    return render_template('blacklist.html', package=None)
+    return render_template('blacklist.html', package=None)  
 
 if __name__ == "__main__":
     app.run(debug=True)
