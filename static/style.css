@@ -3,64 +3,46 @@ body{
 }
 
 .background-image {
-    background-image: url(images/bcg.bmp);
+
+    /*background-image: url(images/test.jpg);*/
+    background-color: #1f242d;
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-#particles-js {
+#particle-container {
+    position: relative;
     width: 100%;
-    height: 90vh;
-  }
-
-
-.input-field{
-    background: transparent;
-    border: 2px solid #333;
+    height: 100vh;
 }
 
-.input-field::placeholder{
-    color: white;
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 
 
 
-.card-body{
-    transition: .5s;
-}
-
-
-.submit-button{
-    background: #545454;
-    border: 2px solid #333;
-
-    color: white;
-
-    transition: .5s;
-}
-
-
-
-.href-color{
-    color: #3e3e3e !important;
-    transition: .5s;
-}
-
-
+  
 .login-card{
-    background: rgba(0, 0, 0, 0.1);
+    background: #323946;
     
     border: 5px solid #6d6d6d;
     border-radius: 10px;
 
     box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
+
+    transition: .5s;
 }
 
 
 .login-card:hover{
     border: 5px solid #0ef;
+
+    background: rgba(0, 0, 0, 0.1);
 
     box-shadow: 0 0 20px #0ef, inset 0 0 20px #0ef;
 }
@@ -89,6 +71,53 @@ body{
     color: #0ef;
 }
 
+
+
+
+
+
+
+.input-field{
+    background: transparent;
+    border: 2px solid #545454;
+    color: white;
+}
+
+.input-field::placeholder{
+    color: white;
+}
+
+
+
+
+
+
+.card-body{
+    transition: .5s;
+}
+
+
+
+
+.submit-button{
+    background: #545454;
+    border: 2px solid #545454;
+
+    color: white;
+
+    transition: .5s;
+}
+
+
+
+.href-color{
+    color: #545454 !important;
+    transition: .5s;
+}
+
+
+
+
 .header{
     transition: 0.5s;
 }
@@ -112,7 +141,6 @@ body{
 
 .info-card:hover .header{
     color: #0ef;   
-    color: white; 
 }
 
 .info-button{
@@ -127,5 +155,39 @@ body{
 
 .info-button:hover{
     background-color: #0ef;
-color: white;
+    color: white;
+}
+
+
+
+.info-card:hover .neon .header{
+    color: #0ef;   
+}
+
+
+
+
+
+.linksubmit .input-field{
+    border: 3px solid #323946;
+}
+
+.linksubmit .submit-button{
+    background: #323946;
+    border: none;
+}
+
+
+.linksubmit:hover .input-field{
+    border: 2px solid #0ef;
+
+    box-shadow: 0 0 5px #0ef, inset 0 0 5px #0ef;
+}
+
+.linksubmit:hover .submit-button{
+    background-color: #0ef;
+
+    border: none;
+
+    box-shadow: 0 0 5px #0ef, inset 0 0 5px #0ef;
 }

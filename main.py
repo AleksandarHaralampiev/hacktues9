@@ -75,18 +75,25 @@ def register():
         username = request.form.get("username")
         psw = request.form.get("password")
         psw_confirm = request.form.get("confirm_password")
-        if User.query.filter_by(username=username).first():
-            return render_template('register.html', message="Username already exists.")
-        if User.query.filter_by(email=email).first():
+        user = User.query.filter_by(email=email).first()
+        if user:
             return render_template('register.html', message="Another account is using this email.")
-        if psw != psw_confirm:
-            return render_template('register.html', message="The passwords does not match.")
-        
-        hash_object = hashlib.sha256(psw.encode('utf-8'))
-        hex_dig = hash_object.hexdigest()
-        user = User(email=email, username=username, password = hex_dig)
-        db.session.add(user)
-        db.session.commit()
+        elif len(email) < 4:
+            return render_template('register.html', message=" must be longer than 3 characters.")
+        elif len(username) < 2:
+            return render_template('register.html', message="Username must be longer than 2 characters.")
+        elif psw != psw_confirm:
+            return render_template('register.html', message="The passwords do not match.")
+        elif len(psw) < 7:
+            return render_template('register.html', message="The password must be at least 7 characters")
+        else:
+            hash_object = hashlib.sha256(psw.encode('utf-8'))
+            hex_dig = hash_object.hexdigest()
+            user = User(email=email, username=username, password = hex_dig)
+            db.session.add(user)
+            db.session.commit()
+            flash('Account created!', category='success')
+            return redirect(url_for('login'))
     return render_template('register.html')
 
 
