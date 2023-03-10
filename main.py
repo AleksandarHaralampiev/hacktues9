@@ -1,3 +1,5 @@
+# imports
+
 from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
@@ -10,20 +12,17 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from newsapi import NewsApiClient
+import string
+from urllib.parse import urlparse
+from cryptography.fernet import Fernet, InvalidToken
+
+
+
 
 #2fa configuration
 
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
-
-import random
-import string
-
-import os
-from email.message import EmailMessage
-import ssl
-import smtplib
-import random
 
 
 email_sender = 'dataexotica@gmail.com'
@@ -34,6 +33,10 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
 db = SQLAlchemy(app)
+key = b'TjLP9WXHKaAlXAebZa8k1sFkIfbiM-puCkoNOZCXE70='
+crypter = Fernet(key)
+
+
 
 # Models
 class User(db.Model):
@@ -43,13 +46,14 @@ class User(db.Model):
     username = db.Column(db.String(), unique = True, nullable = False)
     password = db.Column(db.String(), nullable = False)
     
-class Combo(db.Model):
-    __tablename__ = 'combo'
+class Item(db.Model):
+    __tablename__ = 'password'
     id = db.Column(db.Integer(), primary_key = True)
-    combo_username = db.Column(db.String(), nullable = False, unique = True)
-    combo_password = db.Column(db.String(), nullable = False, unique = True)
-    combo_website = db.Column(db.String(), nullable = False, unique = True)
-
+    username = db.Column(db.String(), nullable = False)
+    user_password = db.Column(db.String(), nullable = False)
+    website = db.Column(db.String(), nullable = False)
+    
+    
 # Routes
 @app.route('/')
 @app.route('/home')
@@ -133,59 +137,48 @@ def login():
             return render_template('login.html', message="Invalid Credentials")
     else:
         return render_template('login.html')
-    
 
-
-
-@app.route('/add_pass', methods = ["GET", "POST"])
+@app.route('/addpass', methods=['GET', 'POST'])
 def addpass():
-        if 'email' not in session:
-                return redirect(url_for('login'))
-        if request.method == 'POST':
-                email = session['email']
-                password = request.form['password']
-                website = request.form['website']
-                user = request.form['username']
-                parsed_url = urlparse(website)
-                user_obj = User.query.filter_by(email=email).first()
-                if not user_obj:
-                    flash('Unauthorized access')
-                    return redirect(url_for('manager'))
-        
-                if parsed_url.scheme and parsed_url.netloc:
-                    encrypted_password = fernet.encrypt(password.encode()).decode('utf-8')
-                    password = Password(email=email, user=user, user_password=encrypted_password, website=website)
-                    db.session.add(password)
-                    db.session.commit()
-                    return redirect(url_for('manager'))
-                else:
-                    flash('Invalid website URL')
-        else :
-                return render_template('add_password.html')
-
-@app.route('/manager', methods=['GET', 'POST'])
-def manager():
-    email = session['email']
-    decrypted_passwords = {}
-    passwords = Password.query.filter_by(email=email).all()
-    f = Fernet(key)
-    
     if request.method == 'POST':
-        pass
-        
-    # Loop over passwords and decrypt each one
-    for password in passwords:
-        if password.user_password in decrypted_passwords:
-            # Password is already decrypted
-            continue
-        try:
-            decrypted_password = f.decrypt(password.user_password.encode()).decode('utf-8')
-            decrypted_passwords[password.user_password] = decrypted_password
-        except :
-            # Password could not be decrypted
-            decrypted_passwords[password.user_password] = 'Error: Could not decrypt password'
+        username = request.form['username']
+        password = request.form['password']
+        website = request.form['website']
 
-    return render_template('password_manager.html', passwords=passwords, decrypted_passwords=decrypted_passwords, f=f)
+        # Encrypt the password
+        encrypted_password = crypter.encrypt(password.encode())
+
+        # Create a new Item instance with the encrypted password
+        item = Item(username=username, user_password=encrypted_password, website=website)
+        db.session.add(item)
+        db.session.commit()
+        return redirect(url_for('manager'))
+
+    return render_template('addpass.html')
+
+@app.route('/manager')
+def manager():
+    # Retrieve all items from the database
+    items = Item.query.all()
+
+    # Decrypt the passwords and create a list of dictionaries with the decrypted passwords
+    decrypted_items = []
+    for item in items:
+        try:
+            
+            decrypted_password_b = crypter.decrypt(item.user_password)
+            decrypted_password = (decrypted_password_b.decode())
+            decrypted_item = {
+                'id': item.id,
+                'username': item.username,
+                'password': decrypted_password,
+                'website': item.website
+            }
+            decrypted_items.append(decrypted_item)
+        except InvalidToken:
+            print(f"Failed to decrypt item with id {item.id}")
+
+    return render_template('manager.html', items=decrypted_items)
 
 
 
@@ -194,7 +187,7 @@ def manager():
 def password_generator():
     if request.method == 'POST':
         chars = ""
-        length = request.form.get('length')
+        length = request.form.get('length', default = 12)
         length = int(length)
         uppercase = request.form.get('uppercase', False)
         lowercase = request.form.get('lowercase', False)
@@ -218,7 +211,7 @@ def password_generator():
     return render_template('password_generator.html')
 
 
-@app.route('/passowrd_cheecker', methods=["POST", "GET"])
+@app.route('/password_checker', methods=["POST", "GET"])
 def password_checker():
     if request.method == 'POST':
         
@@ -302,8 +295,15 @@ def profile():
         user = User.query.filter_by(email=email).first()
         return render_template('profile.html', email=email)
 
+
+
 @app.route('/verification', methods=['GET', 'POST'])
 def verification():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))    
     print("hello world")
     if request.method == 'POST':
         code= int(request.form['code'])
