@@ -1,31 +1,32 @@
 {% extends 'profile.html' %}
 {% block content %}
 
-<body>
-    <div style="height: 100vh; display: flex;justify-content: center; align-items: center;">
-	<div class="container" >
-		<div class="row" >
-			<div class="col-md-1">
-				<img src="../static/images/user_phishing.png" alt="Gmail Logo" width="80px">
-			</div>
-			<div class="col-md-7">
-				<h3>Congratulations! You've won $50!</h3>
-				<p>From: <a href="#" style="text-decoration: none;">noreply@revolot.com</a></p>
-				<p>To: <a href="#" style="text-decoration: none;">Me</a></p>
-			</div>
-		</div>
-		<hr>
-		<div class="row">
-			<div class="col-md-12">
-				<p>Dear Recipient,</p>
-				<p>Congratulations! You're a lucky winner!<br>You have been chosen to receive a $50 reward, but they need to take immediate action to claim it.<br><a href="{{url_for('visualization')}}">Sign in</a> to the Revolut website, because this offer is only available for a limited time! </p>
-				<p>Best regards,<br>Revolut</p>
-			</div>
-		</div>
-	</div>
+<div class="container mb-auto ">
+	
+    <div class="row">
+            
+        <div class="col-md-1">
+            <img src="../static/images/user_phishing.png" alt="Gmail Logo" width="80px">
+        </div>
+            
+        <div class="col-md-7">
+            <h3>Congratulations! You've won $50!</h3>
+            <p>From: <a href="#" style="text-decoration: none;">noreply@revolot.com</a></p>
+            <p>To: <a href="#" style="text-decoration: none;">Me</a></p>
+        </div>
+        
+    </div>
+        
+    <hr>
+        
+    <div class="row">
+        <div class="col-md-12">
+            <p>Dear Recipient,</p>
+            <p>Congratulations! You're a lucky winner!<br>You have been chosen to receive a $50 reward, but they need to take immediate action to claim it.<br><a href="{{url_for('visualization')}}">Sign in</a> to the Revolut website, because this offer is only available for a limited time! </p>
+            <p>Best regards,<br>PayPal</p>
+        </div>
+    </div>
 </div>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
