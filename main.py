@@ -289,6 +289,7 @@ def phishing_1():
 
 @app.route('/lectures_1')
 def lecture_1():
+    
     return render_template('lecture_1.html')
 
 @app.route('/phishing')
