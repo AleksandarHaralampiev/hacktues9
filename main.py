@@ -7,6 +7,7 @@ import ssl
 import smtplib
 import random
 import requests
+import json
 from bs4 import BeautifulSoup
 import json
 from urllib.parse import urlparse
@@ -75,25 +76,18 @@ def register():
         username = request.form.get("username")
         psw = request.form.get("password")
         psw_confirm = request.form.get("confirm_password")
-        user = User.query.filter_by(email=email).first()
-        if user:
+        if User.query.filter_by(username=username).first():
+            return render_template('register.html', message="Username already exists.")
+        if User.query.filter_by(email=email).first():
             return render_template('register.html', message="Another account is using this email.")
-        elif len(email) < 4:
-            return render_template('register.html', message=" must be longer than 3 characters.")
-        elif len(username) < 2:
-            return render_template('register.html', message="Username must be longer than 2 characters.")
-        elif psw != psw_confirm:
-            return render_template('register.html', message="The passwords do not match.")
-        elif len(psw) < 7:
-            return render_template('register.html', message="The password must be at least 7 characters")
-        else:
-            hash_object = hashlib.sha256(psw.encode('utf-8'))
-            hex_dig = hash_object.hexdigest()
-            user = User(email=email, username=username, password = hex_dig)
-            db.session.add(user)
-            db.session.commit()
-            flash('Account created!', category='success')
-            return redirect(url_for('login'))
+        if psw != psw_confirm:
+            return render_template('register.html', message="The passwords does not match.")
+        
+        hash_object = hashlib.sha256(psw.encode('utf-8'))
+        hex_dig = hash_object.hexdigest()
+        user = User(email=email, username=username, password = hex_dig)
+        db.session.add(user)
+        db.session.commit()
     return render_template('register.html')
 
 
@@ -289,7 +283,6 @@ def phishing_1():
 
 
 @app.route('/lectures_1')
-
 def lecture_1():
     return render_template('lecture_1.html')
 
@@ -309,13 +302,10 @@ def left():
 
 @app.route('/manager', methods=['GET', 'POST'])
 def manager():
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
+    email = session['email']
     decrypted_passwords = {}
     passwords = Password.query.filter_by(email=email).all()
+    key = Fernet.generate_key()
     f = Fernet(key)
     
     if request.method == 'POST':
@@ -366,13 +356,29 @@ def addpass():
 def visualization():
     return render_template('visualization.html')
 
+@app.route('/link_checker', methods=['GET', 'POST'])
+def checker():
+    api_key = 'eb33fe8e5313e2df96a5629a911aba8722b49e897ed9d6795f1104055b97c3cc'
+    url  = 'https://www.virustotal.com/vtapi/v2/url/report'
+    website = 'https://youtube.com'
+    params = {'apikey': api_key, 'resource': website}
+    response = requests.get(url, params=params)
+    response_json = json.loads(response.content)
+    if response_json['positives'] <= 0:
+        message = "Safe"
+        return render_template('linkchecker.html', message=message)
+    if response_json['positives'] >= 3:
+        message = "Not Sure"
+        return render_template('linkchecker.html', message=message)
+    if response_json['positives'] >= 4:
+        message = "Malicious"
+        return render_template('linkchecker.html', message=message)
+    else:
+        message = "Something went wrong"
+        return render_template('linkchecker.html', message=message)
+        
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
     if request.method == 'POST':
         url = request.form.get('url')
         headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
@@ -413,9 +419,9 @@ def check_link():
             result_text_one = 'No results found.'
 
         result_div= None
-        return render_template('link_checkup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+        return render_template('dns_lookuphtml', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
-    return render_template('link_checkup.html')
+    return render_template('dns_lookup.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
