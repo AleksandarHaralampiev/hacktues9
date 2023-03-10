@@ -289,6 +289,7 @@ def phishing_1():
 
 
 @app.route('/lectures_1')
+
 def lecture_1():
     return render_template('lecture_1.html')
 
@@ -308,7 +309,11 @@ def left():
 
 @app.route('/manager', methods=['GET', 'POST'])
 def manager():
-    email = session['email']
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     decrypted_passwords = {}
     passwords = Password.query.filter_by(email=email).all()
     f = Fernet(key)
@@ -363,6 +368,11 @@ def visualization():
 
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         url = request.form.get('url')
         headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
