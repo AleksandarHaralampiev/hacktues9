@@ -81,6 +81,8 @@ canvas {
     background: transparent;
     border: 2px solid #545454;
     color: white;
+
+    transition: .5s;
 }
 
 .input-field::placeholder{
@@ -145,7 +147,7 @@ canvas {
 }
 
 .info-button{
-    background-color: #0ef;
+    background-color: #0ef !important;
     box-shadow: 0 0 10px #0ef;
 
     font-size: 20px;
@@ -272,4 +274,11 @@ canvas {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 8px;
+  }
+
+
+
+
+  .pass-gen:hover .input-field{
+    border: 2px solid #0ef;
   }
