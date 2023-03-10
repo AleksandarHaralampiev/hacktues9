@@ -26,29 +26,23 @@ canvas {
 
 
   
-.login-card {
-    position: relative;
-    z-index: 1;
-    margin: 0 auto;
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  }
-
-  .login-card{
-    background: rgba(0, 0, 0, 0.1);
+.login-card{
+    background: #323946;
     
     border: 5px solid #6d6d6d;
     border-radius: 10px;
 
     box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
+
+    transition: .5s;
 }
 
 
 .login-card:hover{
     border: 5px solid #0ef;
+
+    background: rgba(0, 0, 0, 0.1);
 
     box-shadow: 0 0 20px #0ef, inset 0 0 20px #0ef;
 }
@@ -86,6 +80,7 @@ canvas {
 .input-field{
     background: transparent;
     border: 2px solid #545454;
+    color: white;
 }
 
 .input-field::placeholder{
@@ -116,7 +111,7 @@ canvas {
 
 
 .href-color{
-    color: #3e3e3e !important;
+    color: #545454 !important;
     transition: .5s;
 }
 
