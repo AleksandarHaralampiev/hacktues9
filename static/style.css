@@ -21,8 +21,12 @@ canvas {
     top: 0;
     left: 0;
 }
+
+
+
+
   
-  .login-card {
+.login-card {
     position: relative;
     z-index: 1;
     margin: 0 auto;
@@ -32,40 +36,7 @@ canvas {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   }
 
-.input-field{
-    background: transparent;
-    border: 2px solid #333;
-}
-
-.input-field::placeholder{
-    color: white;
-}
-
-
-
-.card-body{
-    transition: .5s;
-}
-
-
-.submit-button{
-    background: #545454;
-    border: 2px solid #333;
-
-    color: white;
-
-    transition: .5s;
-}
-
-
-
-.href-color{
-    color: #3e3e3e !important;
-    transition: .5s;
-}
-
-
-.login-card{
+  .login-card{
     background: rgba(0, 0, 0, 0.1);
     
     border: 5px solid #6d6d6d;
@@ -106,6 +77,52 @@ canvas {
     color: #0ef;
 }
 
+
+
+
+
+
+
+.input-field{
+    background: transparent;
+    border: 2px solid #545454;
+}
+
+.input-field::placeholder{
+    color: white;
+}
+
+
+
+
+
+
+.card-body{
+    transition: .5s;
+}
+
+
+
+
+.submit-button{
+    background: #545454;
+    border: 2px solid #545454;
+
+    color: white;
+
+    transition: .5s;
+}
+
+
+
+.href-color{
+    color: #3e3e3e !important;
+    transition: .5s;
+}
+
+
+
+
 .header{
     transition: 0.5s;
 }
@@ -129,7 +146,6 @@ canvas {
 
 .info-card:hover .header{
     color: #0ef;   
-    color: white; 
 }
 
 .info-button{
@@ -144,5 +160,39 @@ canvas {
 
 .info-button:hover{
     background-color: #0ef;
-color: white;
+    color: white;
+}
+
+
+
+.info-card:hover .neon .header{
+    color: #0ef;   
+}
+
+
+
+
+
+.linksubmit .input-field{
+    border: 3px solid #323946;
+}
+
+.linksubmit .submit-button{
+    background: #323946;
+    border: none;
+}
+
+
+.linksubmit:hover .input-field{
+    border: 2px solid #0ef;
+
+    box-shadow: 0 0 5px #0ef, inset 0 0 5px #0ef;
+}
+
+.linksubmit:hover .submit-button{
+    background-color: #0ef;
+
+    border: none;
+
+    box-shadow: 0 0 5px #0ef, inset 0 0 5px #0ef;
 }
