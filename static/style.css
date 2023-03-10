@@ -128,7 +128,7 @@ canvas {
 
 
 .info-card{
-    background: #323946;
+    background: #323946 !important;
     color: white;
     border-radius: 15px;
 
