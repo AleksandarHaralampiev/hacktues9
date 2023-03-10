@@ -147,7 +147,7 @@ def password_generator():
                 return redirect(url_for('login'))
     if request.method == 'POST':
         chars = ""
-        length = request.form.get('length', default = 12)
+        length = request.form.get('length')
         length = int(length)
         uppercase = request.form.get('uppercase', False)
         lowercase = request.form.get('lowercase', False)
