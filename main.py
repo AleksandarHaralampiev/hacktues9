@@ -9,6 +9,7 @@ import random
 import requests
 from bs4 import BeautifulSoup
 import json
+from newsapi import NewsApiClient
 
 
 #2fa configuration

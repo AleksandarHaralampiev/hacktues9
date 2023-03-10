@@ -1,42 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cybersecurity News</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
-
-<div class="jumbotron" style="color:black">
-
-    <h1 style="color:black">
-
-        NEWS
-
-    </h1>
-
-</div>
+{% extends 'profile.html' %}
+{% block content %}
 
 
-<div class="container">
 
-    {% for _ in range(5) %}
 
-        {% for new, des, l, i in context %}
+    <div class="row w-100 p-0 d-flex justify-content-center align-items-center overflow-auto">
 
-            <img src="{{i}}" alt="">
-            <h3>News: </h3> {{new}}
-            <h4>Description: </h4> {{des}}
-            <div>Read more <a href="{{l}}">here</a></div>
-            
+            <h1 class="text-center mb-3">Security News</h1>
+            <hr>
+        
+            {% for _ in range(5) %}
 
+            {% for new, des, l, i in context %}
+
+                <div class="col-3 bg-transparent card info-card border-white px-0 mx-2 my-3 h-75 overflow-auto">
+                    <a href="{{l}}" class="header text-decoration-none">
+                        <img src="{{i}}" alt="Image unavailable" class="card-img-top">
+                    </a>
+                    
+                    
+                    <div class="card-body">
+                        <h3><a href="{{l}}" class="header text-decoration-none">{{new}}</a></h3>
+                    </div>
+                </div>
+                    
+
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
 
 
-</div>
+    </div>
 
-
-</body>
-</html>
+{% endblock %}

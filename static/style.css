@@ -119,6 +119,7 @@ canvas {
 
 
 .header{
+    color: white;
     transition: 0.5s;
 }
 
@@ -243,3 +244,32 @@ canvas {
     background: rgba(0, 0, 0, 0.1) !important;
     border: solid 1px 
 }
+
+
+
+/*scrollbar*/
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+  
+    border-radius: 8px;
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 8px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 8px;
+  }
