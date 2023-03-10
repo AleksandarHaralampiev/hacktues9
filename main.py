@@ -15,14 +15,85 @@ from newsapi import NewsApiClient
 import string
 from urllib.parse import urlparse
 from cryptography.fernet import Fernet, InvalidToken
-
+import openai
 
 
 
 #2fa configuration
 
-email_sender = 'dataexotica@gmail.com'
-email_password = 'atyocjltnmhlprgx'
+openai.api_key = "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"
+
+INSTRUCTIONS = """You are an AI assistant that is a cybersecurity expert.
+You know all about the different cyber attacks and cyber protection.
+You can advise how to prevent cyber attacks, what to do if the user is attacked and answer questions about cybersecurity.
+If you are unable to provide an answer to a question or the question is not associated with cybersecurity, please respond with the phrase "I'm just a cybersecurity expert, I can't help with that."
+Do not use any external URLs in your answers. Do not refer to any blogs in your answers.
+Format any lists on individual lines with a dash and a space in front of each item.Never answer other questions except cybersecurity."""
+TEMPERATURE = 0.5
+MAX_TOKENS = 500
+FREQUENCY_PENALTY = 0
+PRESENCE_PENALTY = 0.6
+MAX_CONTEXT_QUESTIONS = 10
+previous_questions_and_answers = []
+
+
+def get_response(instructions, previous_questions_and_answers, new_question):
+    messages = [
+        { "role": "system", "content": instructions },
+    ]
+
+    for question, answer in previous_questions_and_answers[-MAX_CONTEXT_QUESTIONS:]:
+        messages.append({ "role": "user", "content": question })
+        messages.append({ "role": "assistant", "content": answer })
+    
+    messages.append({ "role": "user", "content": new_question })
+
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        temperature=TEMPERATURE,
+        max_tokens=MAX_TOKENS,
+        top_p=1,
+        frequency_penalty=FREQUENCY_PENALTY,
+        presence_penalty=PRESENCE_PENALTY,
+    )
+
+    return completion.choices[0].message.content
+
+
+def get_moderation(question):
+    errors = {
+        "hate": "Content that expresses, incites, or promotes hate based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste.",
+        "hate/threatening": "Hateful content that also includes violence or serious harm towards the targeted group.",
+        "self-harm": "Content that promotes, encourages, or depicts acts of self-harm, such as suicide, cutting, and eating disorders.",
+        "sexual": "Content meant to arouse sexual excitement, such as the description of sexual activity, or that promotes sexual services (excluding sex education and wellness).",
+        "sexual/minors": "Sexual content that includes an individual who is under 18 years old.",
+        "violence": "Content that promotes or glorifies violence or celebrates the suffering or humiliation of others.",
+        "violence/graphic": "Violent content that depicts death, violence, or serious physical injury in extreme graphic detail.",
+    }
+
+    response = openai.Moderation.create(input=question)
+
+    if response.results[0].flagged:
+        result = [
+            error
+            for category, error in errors.items()
+            if response.results[0].categories[category]
+        ]
+        return result
+    
+    return None
+
+def get_answer(new_question):
+    errors = get_moderation(new_question)
+    if errors:
+        return "Sorry, you're question didn't pass the moderation check"
+    
+    response = get_response(INSTRUCTIONS, previous_questions_and_answers, new_question)
+    
+    previous_questions_and_answers.append((new_question, response))
+    
+    return response
 
 
 email_sender = 'dataexotica@gmail.com'
@@ -213,79 +284,80 @@ def password_generator():
 
 @app.route('/password_checker', methods=["POST", "GET"])
 def password_checker():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
-        
-        password = request.form.get('password', '')
-        upperCase = [1 if c in string.ascii_uppercase else 0 for c in password]
-        lowerCase = [1 if c in string.ascii_lowercase else 0 for c in password]
-        special = [1 if c in string.punctuation else 0 for c in password]
-        numbers = [1 if c in string.digits else 0 for c in password]
-        characters = [upperCase, lowerCase, special, numbers]
-        length = len(password)
-        
-        score = 0
-        
-        # Check if password is in common list
-        
-        with open("commonPasswords.txt", "r") as f:
-            commonPasswords = f.read().splitlines()
-        
-   
-        # Add score for the length of the password
-        
-        if length > 8:
-            score += 1
-        
-        if length > 12:
-            score += 1
-        
-        if length > 16:
-            score += 1
-        
-        if length > 20:
-            score += 2
-        
-        # Add score for the number of different characters
-        
-        if sum(characters[0]) > 1:
-            score += 1
-        
-        if sum(characters[1]) > 2:
-            score += 1
-        
-        if sum(characters[2]) > 1:
-            score += 2
-        
-        if sum(characters[3]) > 1:
-            score += 1
-        
-
-        message = "Please enter a password"
-        if password in commonPasswords:
             score = 0
-        
-        if score < 4:
-            message = "The password is quite weak" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score == 4:
-             message = "The password is ok" + str(score) + "/10"
-             return render_template('password_checker.html', message=message)
-        elif score == 5:
-            message = "The password is good" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score < 8:
-            message = "The password is very good" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
-        elif score <= 10:
-            message = "The password is very strong" + str(score) + "/10"
-            return render_template('password_checker.html', message=message)
+            password = request.form.get('password', '')
+            if password == None:
+                return render_template('password_checker.html')
+            if len(password) < 12:
+                score += 1
+            elif len(password) >= 12:
+                score += 3
+        # Check for presence of numbers, uppercase and lowercase letters
+            has_digit = False
+            has_uppercase = False
+            has_lowercase = False
+            for char in password:
+                if char.isdigit():
+                    has_digit = True
+                elif char.isupper():
+                    has_uppercase = True
+                elif char.islower():
+                    has_lowercase = True
+    
+            # Check if all character types are present
+            if has_digit and has_uppercase and has_lowercase:
+                score += 3
+            elif (has_digit and has_uppercase) or (has_digit and has_lowercase) or (has_uppercase and has_lowercase):
+                score += 2
+            elif has_digit or has_uppercase or has_lowercase:
+                score += 1
+    
+            # Add bonus points for special characters
+            special_characters = "!@#$%^&*()-_=+[]{};:'\"<>,.?\\|/"
+            has_special = False
+            for char in password:
+                if char in special_characters:
+                    has_special = True
+                    break
+            if has_special:
+                score += 4
+            
+            if (score <= 3):
+                message = "The password is weak"
+                emoji = "😭"
+            elif(score <= 7):
+                message = "The password is good"
+                emoji = "😐"
+            elif (score <= 9):
+                message = "The password is strong"
+                emoji = "😀"
+            elif(score == 10):
+                message = "The password is really strong"
+                emoji = "💪"
+            # Map score to a 1-10 scale
+            width = score * 10
+            width = str(width) + "%"
+            return render_template('password_checker.html', score=score, message=message, width=width,emoji=emoji)
     return render_template('password_checker.html')
 
 
 
-@app.route('/profile')
+@app.route('/profile', methods = ['POST', 'GET'])
 def profile():
-    
+    if request.method == 'POST':
+        question = request.form.get('question')
+        if not question:
+            return render_template('profile.html')
+        answer = get_answer(question)
+        if question and answer:
+            return render_template('profile.html', question = question, answer=answer)
+    else :return render_template('profile.html')
     email = session.get('email')
     remember = session.get('remember')
     if email is None:
