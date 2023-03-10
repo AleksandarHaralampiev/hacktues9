@@ -68,18 +68,25 @@ def register():
         username = request.form.get("username")
         psw = request.form.get("password")
         psw_confirm = request.form.get("confirm_password")
-        if User.query.filter_by(username=username).first():
-            return render_template('register.html', message="Username already exists.")
-        if User.query.filter_by(email=email).first():
+        user = User.query.filter_by(email=email).first()
+        if user:
             return render_template('register.html', message="Another account is using this email.")
-        if psw != psw_confirm:
-            return render_template('register.html', message="The passwords does not match.")
-        
-        hash_object = hashlib.sha256(psw.encode('utf-8'))
-        hex_dig = hash_object.hexdigest()
-        user = User(email=email, username=username, password = hex_dig)
-        db.session.add(user)
-        db.session.commit()
+        elif len(email) < 4:
+            return render_template('register.html', message="Email must be longer than 3 characters.")
+        elif len(username) < 2:
+            return render_template('register.html', message="Username must be longer than 2 characters.")
+        elif psw != psw_confirm:
+            return render_template('register.html', message="The passwords do not match.")
+        elif len(psw) < 7:
+            return render_template('register.html', message="The password must be at least 7 characters")
+        else:
+            hash_object = hashlib.sha256(psw.encode('utf-8'))
+            hex_dig = hash_object.hexdigest()
+            user = User(email=email, username=username, password = hex_dig)
+            db.session.add(user)
+            db.session.commit()
+            flash('Account created!', category='success')
+            return redirect(url_for('login'))
     return render_template('register.html')
 
 
@@ -130,18 +137,55 @@ def login():
 
 
 
-
+@app.route('/add_pass', methods = ["GET", "POST"])
+def addpass():
+        if 'email' not in session:
+                return redirect(url_for('login'))
+        if request.method == 'POST':
+                email = session['email']
+                password = request.form['password']
+                website = request.form['website']
+                user = request.form['username']
+                parsed_url = urlparse(website)
+                user_obj = User.query.filter_by(email=email).first()
+                if not user_obj:
+                    flash('Unauthorized access')
+                    return redirect(url_for('manager'))
+        
+                if parsed_url.scheme and parsed_url.netloc:
+                    encrypted_password = fernet.encrypt(password.encode()).decode('utf-8')
+                    password = Password(email=email, user=user, user_password=encrypted_password, website=website)
+                    db.session.add(password)
+                    db.session.commit()
+                    return redirect(url_for('manager'))
+                else:
+                    flash('Invalid website URL')
+        else :
+                return render_template('add_password.html')
 
 @app.route('/manager', methods=['GET', 'POST'])
-def password_manager():
+def manager():
+    email = session['email']
+    decrypted_passwords = {}
+    passwords = Password.query.filter_by(email=email).all()
+    f = Fernet(key)
+    
     if request.method == 'POST':
-        combo_username = request.form['username']
-        combo_password= request.form['password']
-        combo_website = request.form['website']
-        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
-        db.session.add(combo)
-        db.session.commit()
-    return render_template('password_manager.html')
+        pass
+        
+    # Loop over passwords and decrypt each one
+    for password in passwords:
+        if password.user_password in decrypted_passwords:
+            # Password is already decrypted
+            continue
+        try:
+            decrypted_password = f.decrypt(password.user_password.encode()).decode('utf-8')
+            decrypted_passwords[password.user_password] = decrypted_password
+        except :
+            # Password could not be decrypted
+            decrypted_passwords[password.user_password] = 'Error: Could not decrypt password'
+
+    return render_template('password_manager.html', passwords=passwords, decrypted_passwords=decrypted_passwords, f=f)
 
 
 
@@ -172,6 +216,8 @@ def password_generator():
 
 
     return render_template('password_generator.html')
+
+
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
 def password_checker():
     email = session.get('email')
