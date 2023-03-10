@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import json
 from newsapi import NewsApiClient
 
+
 #2fa configuration
 
 email_sender = 'dataexotica@gmail.com'
@@ -68,25 +69,18 @@ def register():
         username = request.form.get("username")
         psw = request.form.get("password")
         psw_confirm = request.form.get("confirm_password")
-        user = User.query.filter_by(email=email).first()
-        if user:
+        if User.query.filter_by(username=username).first():
+            return render_template('register.html', message="Username already exists.")
+        if User.query.filter_by(email=email).first():
             return render_template('register.html', message="Another account is using this email.")
-        elif len(email) < 4:
-            return render_template('register.html', message="Email must be longer than 3 characters.")
-        elif len(username) < 2:
-            return render_template('register.html', message="Username must be longer than 2 characters.")
-        elif psw != psw_confirm:
-            return render_template('register.html', message="The passwords do not match.")
-        elif len(psw) < 7:
-            return render_template('register.html', message="The password must be at least 7 characters")
-        else:
-            hash_object = hashlib.sha256(psw.encode('utf-8'))
-            hex_dig = hash_object.hexdigest()
-            user = User(email=email, username=username, password = hex_dig)
-            db.session.add(user)
-            db.session.commit()
-            flash('Account created!', category='success')
-            return redirect(url_for('login'))
+        if psw != psw_confirm:
+            return render_template('register.html', message="The passwords does not match.")
+        
+        hash_object = hashlib.sha256(psw.encode('utf-8'))
+        hex_dig = hash_object.hexdigest()
+        user = User(email=email, username=username, password = hex_dig)
+        db.session.add(user)
+        db.session.commit()
     return render_template('register.html')
 
 
@@ -137,55 +131,18 @@ def login():
 
 
 
-@app.route('/add_pass', methods = ["GET", "POST"])
-def addpass():
-        if 'email' not in session:
-                return redirect(url_for('login'))
-        if request.method == 'POST':
-                email = session['email']
-                password = request.form['password']
-                website = request.form['website']
-                user = request.form['username']
-                parsed_url = urlparse(website)
-                user_obj = User.query.filter_by(email=email).first()
-                if not user_obj:
-                    flash('Unauthorized access')
-                    return redirect(url_for('manager'))
-        
-                if parsed_url.scheme and parsed_url.netloc:
-                    encrypted_password = fernet.encrypt(password.encode()).decode('utf-8')
-                    password = Password(email=email, user=user, user_password=encrypted_password, website=website)
-                    db.session.add(password)
-                    db.session.commit()
-                    return redirect(url_for('manager'))
-                else:
-                    flash('Invalid website URL')
-        else :
-                return render_template('add_password.html')
+
 
 @app.route('/manager', methods=['GET', 'POST'])
-def manager():
-    email = session['email']
-    decrypted_passwords = {}
-    passwords = Password.query.filter_by(email=email).all()
-    f = Fernet(key)
-    
+def password_manager():
     if request.method == 'POST':
-        pass
-        
-    # Loop over passwords and decrypt each one
-    for password in passwords:
-        if password.user_password in decrypted_passwords:
-            # Password is already decrypted
-            continue
-        try:
-            decrypted_password = f.decrypt(password.user_password.encode()).decode('utf-8')
-            decrypted_passwords[password.user_password] = decrypted_password
-        except :
-            # Password could not be decrypted
-            decrypted_passwords[password.user_password] = 'Error: Could not decrypt password'
-
-    return render_template('password_manager.html', passwords=passwords, decrypted_passwords=decrypted_passwords, f=f)
+        combo_username = request.form['username']
+        combo_password= request.form['password']
+        combo_website = request.form['website']
+        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
+        db.session.add(combo)
+        db.session.commit()
+    return render_template('password_manager.html')
 
 
 
@@ -194,7 +151,7 @@ def manager():
 def password_generator():
     if request.method == 'POST':
         chars = ""
-        length = request.form.get('length')
+        length = request.form.get('length', default = 12)
         length = int(length)
         uppercase = request.form.get('uppercase', False)
         lowercase = request.form.get('lowercase', False)
@@ -216,71 +173,77 @@ def password_generator():
 
 
     return render_template('password_generator.html')
-
-
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
 def password_checker():
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
     if request.method == 'POST':
+        
+        password = request.form.get('password', '')
+        upperCase = [1 if c in string.ascii_uppercase else 0 for c in password]
+        lowerCase = [1 if c in string.ascii_lowercase else 0 for c in password]
+        special = [1 if c in string.punctuation else 0 for c in password]
+        numbers = [1 if c in string.digits else 0 for c in password]
+        characters = [upperCase, lowerCase, special, numbers]
+        length = len(password)
+        
+        score = 0
+        
+        # Check if password is in common list
+        
+        with open("commonPasswords.txt", "r") as f:
+            commonPasswords = f.read().splitlines()
+        
+   
+        # Add score for the length of the password
+        
+        if length > 8:
+            score += 1
+        
+        if length > 12:
+            score += 1
+        
+        if length > 16:
+            score += 1
+        
+        if length > 20:
+            score += 2
+        
+        # Add score for the number of different characters
+        
+        if sum(characters[0]) > 1:
+            score += 1
+        
+        if sum(characters[1]) > 2:
+            score += 1
+        
+        if sum(characters[2]) > 1:
+            score += 2
+        
+        if sum(characters[3]) > 1:
+            score += 1
+        
+
+        message = "Please enter a password"
+        if password in commonPasswords:
             score = 0
-            password = request.form.get('password', '')
-            if password == None:
-                return render_template('password_checker.html')
-            if len(password) < 12:
-                score += 1
-            elif len(password) >= 12:
-                score += 3
-        # Check for presence of numbers, uppercase and lowercase letters
-            has_digit = False
-            has_uppercase = False
-            has_lowercase = False
-            for char in password:
-                if char.isdigit():
-                    has_digit = True
-                elif char.isupper():
-                    has_uppercase = True
-                elif char.islower():
-                    has_lowercase = True
-    
-            # Check if all character types are present
-            if has_digit and has_uppercase and has_lowercase:
-                score += 3
-            elif (has_digit and has_uppercase) or (has_digit and has_lowercase) or (has_uppercase and has_lowercase):
-                score += 2
-            elif has_digit or has_uppercase or has_lowercase:
-                score += 1
-    
-            # Add bonus points for special characters
-            special_characters = "!@#$%^&*()-_=+[]{};:'\"<>,.?\\|/"
-            has_special = False
-            for char in password:
-                if char in special_characters:
-                    has_special = True
-                    break
-            if has_special:
-                score += 4
-            
-            if (score <= 3):
-                message = "The password is weak"
-                emoji = "😭"
-            elif(score <= 7):
-                message = "The password is good"
-                emoji = "😐"
-            elif (score <= 9):
-                message = "The password is strong"
-                emoji = "😀"
-            elif(score == 10):
-                message = "The password is really strong"
-                emoji = "💪"
-            # Map score to a 1-10 scale
-            width = score * 10
-            width = str(width) + "%"
-            return render_template('password_checker.html', score=score, message=message, width=width,emoji=emoji)
+        
+        if score < 4:
+            message = "The password is quite weak" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score == 4:
+             message = "The password is ok" + str(score) + "/10"
+             return render_template('password_checker.html', message=message)
+        elif score == 5:
+            message = "The password is good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score < 8:
+            message = "The password is very good" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
+        elif score <= 10:
+            message = "The password is very strong" + str(score) + "/10"
+            return render_template('password_checker.html', message=message)
     return render_template('password_checker.html')
+
+
 
 @app.route('/profile')
 def profile():
@@ -327,7 +290,6 @@ def phishing_1():
 
 @app.route('/lectures_1')
 def lecture_1():
-    
     return render_template('lecture_1.html')
 
 @app.route('/phishing')
@@ -338,14 +300,27 @@ def phishing():
 
 @app.route('/logout')
 def left():
-    session.pop("email", None)
-    session.pop("remember", None)
-    session.pop("password", None)
+    session.pop('email', None)
+    session.pop('remember', None)
+    session.pop('password', None)
     return redirect('/')
 
 @app.route('/visualization')
 def visualization():
-    return render_template('visualization.html')
+    email = session.get('email')
+    remember = session.get('remember')
+    password = session.get('password')
+    
+    return render_template('visualization.html', email=email, remember=remember, password=password)
+
+@app.route('/visualization_1', methods = ['POST'])
+def visualization_1():
+    email = session.get('email')
+    remember = session.get('remember')
+    password = session.get('password')
+    
+    return render_template('visualization_1.html', email=email, remember=remember, password=password)
+    
 
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():
