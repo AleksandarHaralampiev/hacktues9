@@ -430,6 +430,36 @@ def Index():
 
     return render_template('news.html', context = mylist)
 
+@app.route('/blacklist', methods=['GET', 'POST'])
+def blacklist():
+    if request.method == 'POST':
+        domain = request.form.get('mail')
+        url = f"https://api.blacklistchecker.com/check/{domain}"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Basic a2V5X3BQem1vN2t1RVhTSFBYeXowUmtKZGY2Z246"
+        }
+
+        response = requests.request("GET", url, headers=headers)
+        data = response.json()
+
+        blacklisting = []
+        names = []
+
+        for item in data['blacklists']:
+            names.append(item['name'])
+            if item['detected'] == 'false':
+                blacklisting.append('Blacklisted')
+            else:
+                blacklisting.append('Not blacklisted')
+
+        package = zip(blacklisting, names)
+
+        return render_template('blacklist.html', package=package)
+
+    return render_template('blacklist.html', package=None)
+
 if __name__ == "__main__":
     app.run(debug=True)
 
