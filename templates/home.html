@@ -1,24 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% extends 'profile.html' %}
-{% block content %}
+      <title>Home</title>
 
-  <div id="particles-js"></div>
-
-  <div class="container glass-homepage info-card d-flex align-items-center justify-content-center flex-column mb-auto w-75 p-5">
-      <h1 class="header">Welcome to the new data world!</h1>
-                  
-      <h5 class="mt-4 mb-5 p-0">Our goal is to provide you with the knowledge and skills necessary to navigate the exciting world of data safely.</h5>
-                  
-      <button class="info-button element py-2 px-4 rounded-pill">  
-        <a href="{{url_for('login')}}">
-          Sign In
-        </a>
-      </button>
-  </div>
-
-  <!-- Optional JavaScript; choose one of the two! -->
-  <!-- Option 1: Bootstrap Bundle with Popper -->
-  <script src="/static/particles.js"></script>
-  <script src="/static/app.js"></script>
+      <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+      <link rel="stylesheet" href="../static/home.css">
       
-{% endblock %}
+  </head>
+  <body>
+
+      <!--Navigation bar-->
+
+      <header class="header">
+          <a href="#" class="logo">Data Exotica</a>
+
+          <i class='bx bx-menu' id="menu-icon"></i>
+
+          <nav class="navbar">
+              <a href="#home" class="active">Home</a>
+              <a href="#about">About</a>
+              <a href="#portfolio">News</a>
+          </nav>
+      </header>
+
+      <!--Home-->
+
+      <section class="home" id="home">
+          <div class="home-content">
+              <h3>Hi, we are</h3>
+              <h1>Data Exotica</h1>
+              <h3>And we provide <span class="multiple-text"></span></h3>
+              <p>This platform is build for...</p>
+              <div class="social-media">
+                  <a href="#"><i class='bx bx-bot'></i></a>
+              </div>
+              <a href="{{url_for('login')}}" class="btn">Log in</a>
+          </div>
+          <div class="home-img">
+              <img src="../static/images/home.png" width="500px">
+          </div>
+      </section>
+
+      <!--About-->
+      
+      <section class="about" id="about">
+          <div class="about-img">
+              <img src="../static/images/about.png" alt="">
+          </div>
+
+          <div class="about-content">
+              <h2 class="heading"> About <span>Us</span></h2>
+              <h3>What can we do for you?</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi delectus quisquam facere voluptatibus totam. Accusantium nemo animi perspiciatis est, rerum voluptatum ex quis atque molestiae ducimus? Eius ratione voluptates ab velit eum quas consequatur, iusto excepturi, provident maiores voluptatem laborum iste rem odio magnam quod necessitatibus!</p>
+              <a href="#" class="btn">Read More</a>
+          </div>
+      </section>
+
+      <!--Portfolio-->
+
+      <section class="portfolio" id="portfolio">
+          <h2 class="heading">Latest <span>News</span></h2>
+
+          <div class="portfolio-container">
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+
+              <div class="portfolio-box">
+                  <img src="../static/images/Portfolio.png" alt="">
+                  <div class="portfolio-layer">
+                      <h4>Web design</h4>
+                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, ab!</p>
+                      <a href="#"><i class='bx bx-link-external' ></i></a>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+      <!--Footer-->
+
+      <footer class="footer">
+          <div class="footer-text">
+              <p>This is the project of team "Exotic" for the ninth edition of Hack Tues.</p>
+          </div>
+
+          <div class="footer-iconTop">
+              <a href="#home">
+                  <i class='bx bx-up-arrow-alt' ></i>
+              </a>
+          </div>
+      </footer>
+
+      <!--Scroll reveal-->
+
+      <script src="https://unpkg.com/scrollreveal"></script>
+
+      <!--Multiple Text-->
+
+      <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+      
+      <!--Javascript-->
+
+      <script src="../static/script.js"></script>
+  </body>
+</html>
