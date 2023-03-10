@@ -2,9 +2,14 @@
         
 {% block content %}
 <style>
+.corral {
+    margin: 0 auto;
+    width: 460px;
+}
 
 .contentContainer {
     position: relative;
+    margin: 130px auto 0;
     padding: 30px 10% 50px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -106,6 +111,7 @@ a.button, a.button:link, a.button:visited, .button {
 .forgotLink {
     margin: 20px auto;
     padding-bottom: 20px;
+    border-bottom: 1px solid #cbd2d6;
     text-align: center;
 }
 
@@ -129,69 +135,41 @@ a, a:link, a:visited {
 }
     </style>
   </head>
-  
-  
-  
   <body>
-    <div class="container d-flex flex-row justify-content-around mb-auto p-3 w-75">
-            
-            <div class="col-6 info-card p-1 p-sm-5 d-flex flex-column justify-content-center text-center overflow-auto">
-                <h2 class="header mb-auto">Hacker View</h2>
-                
-                <div class="container mb-auto d-flex flex-column">
-                    <h5><i>Hacking<span class="typewriter">...</span></i></h5>
-                    
-                    <div>
-                        <h5>Victim's Credentials Stolen:</h5>
-                        <div>Hacked Username: <i>#</i></div>
-                        <div>Hacked Password: <i>#</i></div>
-                    </div>
-                </div>
+    <div class="container d-flex flex-row">
+        <div  style="width: 50%;height: 100vh;display: flex;justify-content: center;align-items: center;">
+            <div style="border: 0px solid;height: 50%;width: 100%;display: flex;flex-direction:column;align-items: center;padding-top: 10px;">
+                <div style="border-bottom: 1px solid;">
+                <h2>Hacker view</h2>
             </div>
-            
-            <div class="col-5 info-card" id="login" data-role="page" data-title="Log in to your PayPal account">
-                    
-                <div id="content" class="contentContainer">
-
-                    <center><img src="https://media.discordapp.net/attachments/1019914365652172890/1083389487217913936/paypal.png?width=150&height=100" style="padding-bottom: 40px;"></center>
-                        
+            </div>
+        </div>
+    <div id="main" class="main " role="main">
+        <section id="login" class="login" data-role="page" data-title="Log in to your PayPal account">
+            <div class="corral">
+                  <div id="content" class="contentContainer">
+                    <header>
+                        <p class="paypal-logo paypal-logo-long"><center><img src="https://media.discordapp.net/attachments/1019914365652172890/1083389487217913936/paypal.png?width=150&height=100" style="padding-bottom: 40px;"></center></p>
+                      </header>
                     <form action="#" method="post" class="proceed maskable" name="login" autocomplete="off" novalidate="">
-                            
-                        <div id="passwordSection">
+                        <div id="passwordSection" class="clearfix">
                             <div class="textInput" id="login_emaildiv">
-                                    
                                 <div class="fieldWrapper">
                                     <label for="email" class="fieldLabel">Email</label>
                                     <input id="email" name="login_email" type="email" class="hasHelp  validateEmpty " required="required" aria-required="true" value="" autocomplete="off" placeholder="Email">
-                                </div>
-                                
+                               </div>
                             </div>
-                                
-                            <div class="textInput lastInputField" id="login_passworddiv">
-                                <div class="fieldWrapper"><label for="password" class="fieldLabel">Password</label>
-                                    <input id="password" name="login_password" type="password" class="hasHelp  validateEmpty " required="required" aria-required="true" value="" placeholder="Password">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="actions actionsSpaced my-0">
-                            <button class="button actionContinue" type="submit" id="btnLogin" name="btnLogin" value="Login">Log In</button>
-                        </div>
                             
-                        <div class="forgotLink my-1">
-                            <a href="#" id="forgotPasswordModal" class="scTrack:unifiedlogin-click-forgot-password">Having trouble logging in?</a>
-                        </div>
-                            
-                        <input type="hidden" id="bp_mid" name="bp_mid" value="">
-                            
-                        <a href="#" class="button secondary" id="createAccount">Sign Up</a>
-                    </form>
+                         <div class="textInput lastInputField" id="login_passworddiv">
+                             <div class="fieldWrapper"><label for="password" class="fieldLabel">Password</label>
+                                <input id="password" name="login_password" type="password" class="hasHelp  validateEmpty " required="required" aria-required="true" value="" placeholder="Password">
+                           </div>
+                         </div>
+                       </div>
+                   <div class="actions actionsSpaced"><button class="button actionContinue" type="submit" id="btnLogin" name="btnLogin" value="Login">Log In</button></div><div class="forgotLink"><a href="#" id="forgotPasswordModal" class="scTrack:unifiedlogin-click-forgot-password">Having trouble logging in?</a></div><input type="hidden" id="bp_mid" name="bp_mid" value="">
+                   </form>
+                   
+                   <a href="#" class="button secondary" id="createAccount">Sign Up</a></div></div></section></div>
                 </div>
 
-            </div>
-
-    </div>
-</body>
-        
-    
 {% endblock %}

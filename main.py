@@ -1,29 +1,44 @@
-#importing libraries
 from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import timedelta
 import hashlib
-import requests
-from bs4 import BeautifulSoup
-import json
-import string
 import os
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
+import requests
+import json
+from bs4 import BeautifulSoup
+import json
+from urllib.parse import urlparse
+from cryptography.fernet import Fernet
 
 #2fa configuration
 
 email_sender = 'dataexotica@gmail.com'
 email_password = 'atyocjltnmhlprgx'
 
+import random
+import string
+
+import os
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
+
+
+email_sender = 'dataexotica@gmail.com'
+email_password = 'atyocjltnmhlprgx'
+key = Fernet.generate_key()
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = '63103453574bccae5541fa05'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 db = SQLAlchemy(app)
+key = Fernet.generate_key()
+fernet = Fernet(key)
 
 # Models
 class User(db.Model):
@@ -33,12 +48,15 @@ class User(db.Model):
     username = db.Column(db.String(), unique = True, nullable = False)
     password = db.Column(db.String(), nullable = False)
     
-class Combo(db.Model):
-    __tablename__ = 'combo'
+class Password(db.Model):
+    __tablename__ = 'password'
     id = db.Column(db.Integer(), primary_key = True)
-    combo_username = db.Column(db.String(), nullable = False, unique = True)
-    combo_password = db.Column(db.String(), nullable = False, unique = True)
-    combo_website = db.Column(db.String(), nullable = False, unique = True)
+    email = db.Column(db.String(), nullable = False)
+    user = db.Column(db.String(), nullable = False)
+    user_password = db.Column(db.String(), nullable = False)
+    website = db.Column(db.String(), nullable = False)
+
+
 
 # Routes
 @app.route('/')
@@ -80,7 +98,6 @@ def login():
     if email:
         return redirect(url_for('verification'))
     if request.method == 'POST':
-        #2fa
         email = request.form['email']
         email_receiver = email
         code = random.randint(100000, 999999)
@@ -100,7 +117,6 @@ def login():
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
             server.login(email_sender, email_password)
             server.sendmail(email_sender, email_receiver, em.as_string())
-        #2fa end
         password = request.form['password']
         remember = request.form.get('remember', False)
         session['remember'] = remember
@@ -113,8 +129,6 @@ def login():
             session['password'] = password
             if remember:
                 session.permanent = True
-            else:
-                session.permanent = False  # set session to expire after browser is closed
             return redirect(url_for('verification'))
         else:
             return render_template('login.html', message="Invalid Credentials")
@@ -123,37 +137,14 @@ def login():
     
 
 
-@app.route('/verification', methods=['GET', 'POST'])
-def verification():
-    if request.method == 'POST':
-        code = int(request.form['code'])
-        if code == session['code']:
-            session['verified'] = True  # set verified flag
-            return redirect(url_for('profile'))
-        else:
-            flash('Invalid Code')
-            return render_template('verification.html')
-    else:
-        return render_template('auth.html')
-
-
-@app.route('/manager', methods=['GET', 'POST'])
-def password_manager():
-    if request.method == 'POST':
-        combo_username = request.form['username']
-        combo_password= request.form['password']
-        combo_website = request.form['website']
-        combo = Combo(combo_username=combo_username,combo_password=combo_password, combo_website=combo_website)
-        db.session.add(combo)
-        db.session.commit()
-    return render_template('password_manager.html')
-
-
-
 
 @app.route('/password_generator', methods=['POST', 'GET'])
 def password_generator():
-
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         chars = ""
         length = request.form.get('length', default = 12)
@@ -183,7 +174,11 @@ def password_generator():
 @app.route('/passowrd_cheecker', methods=["POST", "GET"])
 
 def password_checker():
-
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
             score = 0
             password = request.form.get('password', '')
@@ -246,28 +241,28 @@ def password_checker():
 
 @app.route('/profile')
 def profile():
+    
     email = session.get('email')
-    if not email:
-        return redirect(url_for('login'))
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
+    else:
+        user = User.query.filter_by(email=email).first()
+        return render_template('profile.html', email=email)
 
-    user = User.query.filter_by(email=email).first()
-    combos = Combo.query.all()
-
-    if session.get('verified') == True:
-        return render_template('profile.html', username=user.username, combos=combos)
-
-    return redirect(url_for('verification'))
-
-def is_authenticated():
-    email = session.get('email')
-    verified = session.get('verified')
-    if email and verified:
-        return True
-    return False
-
-
-
-
+@app.route('/verification', methods=['GET', 'POST'])
+def verification():
+    print("hello world")
+    if request.method == 'POST':
+        code= int(request.form['code'])
+        if code == (session['code']):
+            return redirect(url_for('profile'))
+        else:   
+            flash('Invalid Code')
+            return render_template('auth.html')
+    else:
+        return render_template('auth.html')
     
 @app.route('/lectures')
 def lectures():
@@ -279,7 +274,10 @@ def phishing_1():
         login_email = request.form['login_email']
         login_password = request.form['login_password']
         session['login_email'] = login_email
-        session['login_password'] = login_password     
+        session['login_password'] = login_password
+        
+        
+        
     return render_template('visualization.html')
 
 
@@ -301,6 +299,84 @@ def left():
     session.pop("password", None)
     return redirect('/')
 
+
+@app.route('/manager', methods=['GET', 'POST'])
+def manager():
+    email = session['email']
+    decrypted_passwords = {}
+    passwords = Password.query.filter_by(email=email).all()
+    key = Fernet.generate_key()
+    f = Fernet(key)
+    
+    if request.method == 'POST':
+        pass
+        
+    # Loop over passwords and decrypt each one
+    for password in passwords:
+        if password.user_password in decrypted_passwords:
+            # Password is already decrypted
+            continue
+        try:
+            decrypted_password = f.decrypt(password.user_password.encode()).decode('utf-8')
+            decrypted_passwords[password.user_password] = decrypted_password
+        except :
+            # Password could not be decrypted
+            decrypted_passwords[password.user_password] = 'Error: Could not decrypt password'
+
+    return render_template('password_manager.html', passwords=passwords, decrypted_passwords=decrypted_passwords, f=f)
+
+@app.route('/add_pass', methods = ["GET", "POST"])
+def addpass():
+        if 'email' not in session:
+                return redirect(url_for('login'))
+        if request.method == 'POST':
+                email = session['email']
+                password = request.form['password']
+                website = request.form['website']
+                user = request.form['username']
+                parsed_url = urlparse(website)
+                user_obj = User.query.filter_by(email=email).first()
+                if not user_obj:
+                    flash('Unauthorized access')
+                    return redirect(url_for('manager'))
+        
+                if parsed_url.scheme and parsed_url.netloc:
+                    encrypted_password = fernet.encrypt(password.encode()).decode('utf-8')
+                    password = Password(email=email, user=user, user_password=encrypted_password, website=website)
+                    db.session.add(password)
+                    db.session.commit()
+                    return redirect(url_for('manager'))
+                else:
+                    flash('Invalid website URL')
+        else :
+                return render_template('add_password.html')
+
+
+@app.route('/visualization')
+def visualization():
+    return render_template('visualization.html')
+
+@app.route('/link_checker', methods=['GET', 'POST'])
+def checker():
+    api_key = 'eb33fe8e5313e2df96a5629a911aba8722b49e897ed9d6795f1104055b97c3cc'
+    url  = 'https://www.virustotal.com/vtapi/v2/url/report'
+    website = 'https://youtube.com'
+    params = {'apikey': api_key, 'resource': website}
+    response = requests.get(url, params=params)
+    response_json = json.loads(response.content)
+    if response_json['positives'] <= 0:
+        message = "Safe"
+        return render_template('linkchecker.html', message=message)
+    if response_json['positives'] >= 3:
+        message = "Not Sure"
+        return render_template('linkchecker.html', message=message)
+    if response_json['positives'] >= 4:
+        message = "Malicious"
+        return render_template('linkchecker.html', message=message)
+    else:
+        message = "Something went wrong"
+        return render_template('linkchecker.html', message=message)
+        
 @app.route('/linkcheckup', methods=['GET', 'POST'])
 def check_link():
     if request.method == 'POST':
@@ -343,9 +419,9 @@ def check_link():
             result_text_one = 'No results found.'
 
         result_div= None
-        return render_template('link_checkup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+        return render_template('dns_lookuphtml', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
-    return render_template('link_checkup.html')
+    return render_template('dns_lookup.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
