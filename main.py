@@ -9,6 +9,7 @@ import random
 import requests
 from bs4 import BeautifulSoup
 import json
+from newsapi import NewsApiClient
 
 #2fa configuration
 
@@ -352,6 +353,39 @@ def check_link():
         return render_template('link_checkup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
     return render_template('link_checkup.html')
+
+@app.route('/news')
+def Index():
+    newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
+    topheadlines = newsapi.get_everything(q='cybersecurity',
+                                          language='en',
+                                          sort_by = 'publishedAt',
+                                          page_size=5
+                                          )
+                                        
+    articles = topheadlines['articles']
+
+    desc = []
+    news = []
+    link = []
+    img = []
+
+
+    for i in range(len(articles)):
+        myarticles = articles[i]
+
+
+        news.append(myarticles['title'])
+        desc.append(myarticles['content'])
+        img.append(myarticles['urlToImage'])
+        link.append(myarticles['url'])
+
+
+
+    mylist = zip(news, desc, link, img)
+
+
+    return render_template('news.html', context = mylist)
 
 if __name__ == "__main__":
     app.run(debug=True)
