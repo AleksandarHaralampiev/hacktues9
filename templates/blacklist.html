@@ -1,0 +1,16 @@
+    <form action="/blacklist" method="post" class="mb-3 linksubmit">
+        
+        <div class="input-group">
+            <input type="text" name="mail" id="url" placeholder="Check email" >
+            
+            <button type="submit" class="col-3 btn rounded-pill rounded-start submit-button">Check</button>
+        </div>
+    
+    </form>
+
+    {% if package %}
+    <div>BLACKLIST : STATUS</div>
+    {% for st, n in package %}
+        <div>{{ n }} : {{ st }}</div>
+    {% endfor %}
+    {% endif %}
