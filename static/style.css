@@ -147,9 +147,15 @@ canvas {
 }
 
 .info-button{
+    position: relative;
     background-color: #0ef !important;
     box-shadow: 0 0 10px #0ef;
-
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+    padding: 10px 30px;
+    transition: 0.5s;
     font-size: 20px;
     color: white;
 
@@ -159,6 +165,24 @@ canvas {
 .info-button:hover{
     background-color: #0ef;
     color: white;
+}
+
+
+.info-button {
+    
+    
+    
+
+    text-transform: uppercase;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+    padding: 10px 30px;
+    transition: 0.5s;
+
+}
+.info-button:hover {
+    letter-spacing: 0.25em;
+    
 }
 
 
