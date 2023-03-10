@@ -58,7 +58,36 @@ def home():
     email = session.get('email')
     if email:
         return redirect(url_for('profile'))
-    return render_template('home.html')
+    
+    newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
+    topheadlines = newsapi.get_everything(q='cybersecurity',
+                                          language='en',
+                                          sort_by = 'publishedAt',
+                                          page_size=5
+                                          )
+                                        
+    articles = topheadlines['articles']
+
+    desc = []
+    news = []
+    link = []
+    img = []
+
+
+    for i in range(len(articles)):
+        myarticles = articles[i]
+
+
+        news.append(myarticles['title'])
+        desc.append(myarticles['content'])
+        img.append(myarticles['urlToImage'])
+        link.append(myarticles['url'])
+
+
+
+    mylist = zip(news, desc, link, img)
+
+    return render_template('home.html', context = mylist)
 
 
 
