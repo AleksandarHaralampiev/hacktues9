@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chatbot</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:500,700,900|Work+Sans:300">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <button class="open-btn" onclick="openChatWindow()"><i class='bx bx-chat'></i> Chat</button>
+
+    <div class="chat-popup" id="chat-form-container">
+        <form action="#" class="form-container">
+            <div class="chat-window-head">
+                <h4><i class='bx bx-chat'></i> Chat Window</h4>
+                <span class="close-btn" onclick="closeChatWindow()">
+                    <i class='bx bx-x'></i>
+                </span>
+            </div>
+
+            <div class="msg-container">
+                <div class="msg">
+                    <p>Hi, how can I help you?</p>
+                    <span>09:34</span>
+                </div>
+            </div>
+
+            <div class="chat-box-container">
+                <div class="chat-box">
+                    <input type="text" placeholder="Type your message..." name="msg" required>
+                    <button type="submit" class="btn"><i class='bx bx-right-arrow-alt' ></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>
