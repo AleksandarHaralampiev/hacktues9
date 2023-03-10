@@ -60,7 +60,7 @@ class Item(db.Model):
 def home():
     email = session.get('email')
     if email:
-        return redirect(url_for('profile'))
+        return redirect(url_for('news'))
     return render_template('home.html')
 
 
@@ -308,7 +308,7 @@ def verification():
     if request.method == 'POST':
         code= int(request.form['code'])
         if code == (session['code']):
-            return redirect(url_for('profile'))
+            return redirect(url_for('news'))
         else:   
             flash('Invalid Code')
             return render_template('auth.html')
@@ -401,7 +401,7 @@ def check_link():
     return render_template('link_checkup.html')
 
 @app.route('/news')
-def Index():
+def news():
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
                                           language='en',
