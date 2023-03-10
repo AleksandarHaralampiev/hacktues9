@@ -14,13 +14,13 @@
 
             {% for new, des, l, i in context %}
 
-                <div class="col-3 bg-transparent card info-card border-white px-0 mx-2 my-3 h-75 overflow-auto">
-                    <a href="{{l}}" class="header text-decoration-none">
+                <div class="col-3 bg-transparent card info-card border-white d-flex flex-column px-0 mx-2 my-3 h-75 overflow-auto">
+                    <a href="{{l}}" class="header text-decoration-none mb-auto">
                         <img src="{{i}}" alt="Image unavailable" class="card-img-top">
                     </a>
                     
                     
-                    <div class="card-body">
+                    <div class="card-body mb-auto">
                         <h3><a href="{{l}}" class="header text-decoration-none">{{new}}</a></h3>
                     </div>
                 </div>

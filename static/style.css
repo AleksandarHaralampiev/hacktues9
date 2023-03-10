@@ -81,6 +81,8 @@ canvas {
     background: transparent;
     border: 2px solid #545454;
     color: white;
+
+    transition: .5s;
 }
 
 .input-field::placeholder{
@@ -128,7 +130,7 @@ canvas {
 
 
 .info-card{
-    background: #323946;
+    background: #323946 !important;
     color: white;
     border-radius: 15px;
 
@@ -145,9 +147,15 @@ canvas {
 }
 
 .info-button{
-    background-color: #0ef;
+    position: relative;
+    background-color: #0ef !important;
     box-shadow: 0 0 10px #0ef;
-
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+    padding: 10px 30px;
+    transition: 0.5s;
     font-size: 20px;
     color: white;
 
@@ -157,6 +165,24 @@ canvas {
 .info-button:hover{
     background-color: #0ef;
     color: white;
+}
+
+
+.info-button {
+    
+    
+    
+
+    text-transform: uppercase;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+    padding: 10px 30px;
+    transition: 0.5s;
+
+}
+.info-button:hover {
+    letter-spacing: 0.25em;
+    
 }
 
 
@@ -272,4 +298,11 @@ canvas {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 8px;
+  }
+
+
+
+
+  .pass-gen:hover .input-field{
+    border: 2px solid #0ef;
   }

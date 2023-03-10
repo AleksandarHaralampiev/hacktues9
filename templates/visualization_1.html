@@ -139,12 +139,12 @@ a, a:link, a:visited {
                 <h2 class="header mb-auto">Hacker View</h2>
                 
                 <div class="container mb-auto d-flex flex-column">
-                    <h5><i>Hacking<span class="typewriter">...</span></i></h5>
+                    <h5 data-value="Hacking"><i>Hacking<span class="typewriter">...</span></i></h5>
                     
                     <div>   
                         <h5>Victim's Credentials Stolen:</h5>
-                        <div>Hacked Username: <i></i></div>
-                        <div>Hacked Password: <i></i></div>
+                        <div>Hacked Username: <i>{{ email }}</i></div>
+                        <div>Hacked Password: <i>{{ password }}</i></div>
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@ a, a:link, a:visited {
 
                     <center><img src="https://media.discordapp.net/attachments/1019914365652172890/1083389487217913936/paypal.png?width=150&height=100" style="padding-bottom: 40px;"></center>
                         
-                    <form action="/visualization_1" method="post" class="proceed maskable" name="login" autocomplete="off" novalidate="">
+                    <form action="{{url_for('visualization_1')}}" method="post" class="proceed maskable" name="login" autocomplete="off" novalidate="">
                             
                         <div id="passwordSection">
                             <div class="textInput" id="login_emaildiv">
@@ -175,8 +175,7 @@ a, a:link, a:visited {
                         </div>
 
                         <div class="actions actionsSpaced my-0">
-                            
-                           <button class="button actionContinue" type="submit" id="btnLogin" name="btnLogin"  onclick="window.location.href='/visualization_1'" value="Login">Log In</button>
+                            <button class="button actionContinue" type="submit" id="btnLogin" name="btnLogin" value="Login">Log In</button>
                         </div>
                             
                         <div class="forgotLink my-1">
@@ -196,4 +195,3 @@ a, a:link, a:visited {
         
     
 {% endblock %}
-
