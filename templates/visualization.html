@@ -1,156 +1,97 @@
-{% extends 'profile.html' %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DATA EXOTICA</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <link rel="stylesheet" href="../static/assets/css/chat.css">
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../static/assets/css/typing.css">
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../static/visu.css">
+    </head>
+    
+    <body>
         
-{% block content %}
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-
-body{
-    background-color: #1f242d;
-    font-family: 'Roboto Mono', monospace;
-}
-.contentContainer {
-    position: relative;
-    padding: 30px 10% 50px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -khtml-border-radius: 5px;
-    border-radius: 5px;
-}
-
-.textInput input, .textInput textarea {
-    height: 44px;
-    width: 100%;
-    padding: 0 10px;
-    border: 1px solid #9da3a6;
-    background: #fff;
-    text-overflow: ellipsis;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    border-radius: 4px;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    color: #000;
-    font-size: 1em;
-    font-family: Helvetica,Arial,sans-serif;
-    font-weight: 400;
-    direction: ltr;
-}
-.textInput {
-    position: relative;
-    margin: 0 0 10px;
-}
-.textInput .fieldLabel {
-    position: absolute;
-    color: #6c7378;
-    clip: rect(1px 1px 1px 1px);
-    clip: rect(1px,1px,1px,1px);
-    padding: 0;
-    border: 0;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-}
-
-a.button:hover, a.button:link:hover, a.button:visited:hover, .button:hover {
-    background-color: #005ea6;
-    outline: 0;
-}
-a.button, a.button:link, a.button:visited, .button {
-    width: 100%;
-    height: 44px;
-    padding: 0;
-    border: 0;
-    display: block;
-    background-color: #0070ba;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    border-radius: 4px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    -o-appearance: none;
-    appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    color: #fff;
-    font-size: 1em;
-    text-align: center;
-    font-weight: 700;
-    font-family: HelveticaNeue-Medium,"Helvetica Neue Medium",HelveticaNeue,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    text-shadow: none;
-    text-decoration: none;
-    -webkit-transition: background-color .4s ease-out;
-    -moz-transition: background-color .4s ease-out;
-    -o-transition: background-color .4s ease-out;
-    transition: background-color .4s ease-out;
-    -webkit-font-smoothing: antialiased;
-}
-
-.actionsSpaced {
-    margin-top: 30px;
-}
-
-.fieldWrapper {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-}
-
-.forgotLink {
-    margin: 20px auto;
-    padding-bottom: 20px;
-    text-align: center;
-}
-
-a.button.secondary, a.button.secondary:link, a.button.secondary:visited, .button.secondary {
-    background-color: #E1E7EB;
-    color: #2C2E2F;
-}
-a.button, a.button:link, a.button:visited {
-    padding-top: 11px;
-}
-
-a, a:link, a:visited {
-
-    font-family: HelveticaNeue,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-weight: 400;
-    text-decoration: none;
-    -webkit-transition: color .2s ease-out;
-    -moz-transition: color .2s ease-out;
-    -o-transition: color .2s ease-out;
-    transition: color .2s ease-out;
-}
-    </style>
-
+      <div class="vh-100 d-flex flex-column align-items-center justify-content-center text-white overflow-auto">  
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent mb-auto w-100">
   
-  
-  
-  <body>
-    <div class="container d-flex flex-column flex-md-row justify-content-around align-items-center mb-auto p-3 w-75 ">
+            <div class="container-fluid">
+              
+              
+              <a class="navbar-brand me-auto" href="{{url_for('home')}}">
+                <img src="../static/images/logo.png" height="40px">
+                <span class="mx-0">Data Exotica</span>
+              </a>
+          
+              
+              
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+          
+              
+              
+              <div class="collapse navbar-collapse ms-2" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link" href="{{url_for('Index')}}" id="navbarDropdownPasswords" role="button"  aria-expanded="false">
+                      News
+                    </a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPasswords" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Passwords
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownPasswords">
+                      <li><a class="dropdown-item" href="{{url_for('password_generator')}}">Password generator</a></li>
+                      <li><a class="dropdown-item" href="{{url_for('password_checker')}}">Password checker</a></li>
+                      <li><a class="dropdown-item" href="{{url_for('manager')}}">Password manager</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTools" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Tools
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownTools">
+                    <li><a class="dropdown-item" href="{{url_for('dns_lookup')}}">DNS Lookup</a></li>
+                      <li><a class="dropdown-item" href="{{url_for('link_checker')}}">Link Checkup</a></li>
+                      <li><a class="dropdown-item" href="{{url_for('blacklist')}}">Email Blacklist</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownLectures" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Lectures
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownLectures">
+                      <li><a class="dropdown-item" href="{{url_for('lecture_1')}}">Phishing Attack</a></li>
+                    </ul>
+                  </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('left')}}">Sign Out</a>
+                  </li>
+                </ul>
+              </div>
+            
+            
+            </div>
+          
+          </nav>
+        <div class="container d-flex flex-column flex-md-row justify-content-around align-items-center mb-auto p-3 w-75 ">
             
             <div class="col-6 info-card p-1 p-sm-5 d-flex flex-column justify-content-center text-center overflow-auto h-100">
                 <h2 class="header mb-auto">Hacker View</h2>
                 
                 <div class="container mb-auto d-flex flex-column justify-content-center align-items-center">
                     {% if hacked %}
-                    <h5 data-value="HACKING...">HACKING...</h5>
-                    
-                    <div>   
-                        <h5>Victim's Credentials Stolen:</h5>
-                        <div>Hacked Email: {{email}}<i></i></div>
-                        <div>Hacked Password: {{password}}<i></i></div>
+                    <div style="display: flex; flex-direction: column;"> 
+                    <a href="https://git.io/typing-svg">
+                        <img src="https://readme-typing-svg.herokuapp.com/?lines=New+Victim+Found!;+Email: {{email}}; Pass:  {{password}}&center=true&size=30">
+                      </a>
                     </div>
                     {% endif %}
                 </div>
@@ -183,9 +124,9 @@ a, a:link, a:visited {
 
                         <div class="actions actionsSpaced my-0">
                             
-                            <button class="button actionContinue" type="submit" id="btnHover" name="btnHover" onclick="startAnimation()" value="Hover Me">Hover Me</button>                            
+                            <button class="button actionContinue" type="submit" id="btnHover" name="btnHover" onclick="startAnimation()" value="Hover Me">Sign In</button>                            
                         <div class="forgotLink my-1">
-                            <a href="#" id="forgotPasswordModal" class="scTrack:unifiedlogin-click-forgot-password">Having trouble logging in?</a>
+                            <a href="#" id="forgotPasswordModal" class="scTrack:unifiedlogin-click-forgot-password" style="text-decoration: none;">Having trouble logging in?</a>
                         </div>
                             
                         <input type="hidden" id="bp_mid" name="bp_mid" value="">
@@ -197,34 +138,53 @@ a, a:link, a:visited {
             </div>
 
    </div>
-   <script>
-function startAnimation() {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const button = document.getElementById("btnHover");
 
-    let iterations = 0;
-    const interval = setInterval(() => {
-        button.innerText = button.innerText.split("")
-        .map((letter, index) => {
-            if(index < iterations) {
-                return button.dataset.value[index];
-            }
-
-            return letters[Math.floor(Math.random() * 26)];
-        })
-        .join("");
-
-        if(iterations >= button.dataset.value.length) {
-            clearInterval(interval);
-        }
-
-        iterations += 1 / 20;
-    }, 30);
-}
-
-   </script>
-</body>
+           <!-- Optional JavaScript; choose one of the two! -->
+         
+      </div>
+      <script>
+        function startAnimation() {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const button = document.getElementById("btnHover");
         
-    
-{% endblock %}
+            let iterations = 0;
+            const interval = setInterval(() => {
+                button.innerText = button.innerText.split("")
+                .map((letter, index) => {
+                    if(index < iterations) {
+                        return button.dataset.value[index];
+                    }
+        
+                    return letters[Math.floor(Math.random() * 26)];
+                })
+                .join("");
+        
+                if(iterations >= button.dataset.value.length) {
+                    clearInterval(interval);
+                }
+        
+                iterations += 1 / 20;
+            }, 30);
+        }
+        
+           </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+    </body>
+</html>
+        
+
+
+  
+  
+  
+  
+  
+   
+
 

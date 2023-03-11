@@ -119,6 +119,7 @@ class User(db.Model):
 class Item(db.Model):
     __tablename__ = 'password'
     id = db.Column(db.Integer(), primary_key = True)
+    email = db.Column(db.String(), nullable = False)
     username = db.Column(db.String(), nullable = False)
     user_password = db.Column(db.String(), nullable = False)
     website = db.Column(db.String(), nullable = False)
@@ -244,6 +245,7 @@ def addpass():
             if remember != True:
                 return redirect(url_for('login'))
     if request.method == 'POST':
+        email = session['email']
         username = request.form['username']
         password = request.form['password']
         website = request.form['website']
@@ -252,7 +254,7 @@ def addpass():
         encrypted_password = crypter.encrypt(password.encode())
 
         # Create a new Item instance with the encrypted password
-        item = Item(username=username, user_password=encrypted_password, website=website)
+        item = Item(email=email,username=username, user_password=encrypted_password, website=website)
         db.session.add(item)
         db.session.commit()
         return redirect(url_for('manager'))
@@ -267,11 +269,11 @@ def manager():
             if remember != True:
                 return redirect(url_for('login'))
     # Retrieve all items from the database
-    items = Item.query.all()
-
+    email = session['email']
+    users = Item.query.filter_by(email=email).all()    
     # Decrypt the passwords and create a list of dictionaries with the decrypted passwords
     decrypted_items = []
-    for item in items:
+    for item in users:
         try:
             
             decrypted_password_b = crypter.decrypt(item.user_password)
@@ -286,6 +288,7 @@ def manager():
         except InvalidToken:
             print(f"Failed to decrypt item with id {item.id}")
 
+        
     return render_template('manager.html', items=decrypted_items)
 
 
