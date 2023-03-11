@@ -21,7 +21,7 @@ import openai
 
 #2fa configuration
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 INSTRUCTIONS = """You are an AI assistant that is a cybersecurity expert.
 You know all about the different cyber attacks and cyber protection.
@@ -350,14 +350,7 @@ def password_checker():
 
 @app.route('/profile', methods = ['POST', 'GET'])
 def profile():
-    if request.method == 'POST':
-        question = request.form.get('question')
-        if not question:
-            return render_template('profile.html')
-        answer = get_answer(question)
-        if question and answer:
-            return render_template('profile.html', question = question, answer=answer)
-    else :return render_template('profile.html')
+    
     email = session.get('email')
     remember = session.get('remember')
     if email is None:
@@ -472,8 +465,9 @@ def check_link():
 
     return render_template('link_checkup.html')
 
-@app.route('/news')
+@app.route('/news', methods= ['POST', 'GET'])
 def Index():
+
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
                                           language='en',
@@ -502,7 +496,14 @@ def Index():
 
     mylist = zip(news, desc, link, img)
 
-
+    if request.method == 'POST':
+        question = request.form.get('question')
+        if not question:
+            return render_template('news.html', context = mylist)
+        answer = get_answer(question)
+        if question and answer:
+            return render_template('news.html', question = question, answer=answer, context = mylist)
+    else :return render_template('news.html', context = mylist)
     return render_template('news.html', context = mylist)
 
 if __name__ == "__main__":
