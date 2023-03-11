@@ -143,10 +143,17 @@ canvas {
 .info-card:hover{
     border: 2px solid #0ef !important;
     color: white !important;
+
+    box-shadow: 0 0 5px #0ef;
 }
 
 .info-card:hover .header{
     color: #0ef;   
+}
+
+.info-card:hover .card-body .submit-button{
+    background-color: #0ef;
+    box-shadow: 0 0 10px #0ef, inset 0 0 10px #0ef;
 }
 
 .info-button{
