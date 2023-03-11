@@ -238,6 +238,11 @@ def login():
 
 @app.route('/addpass', methods=['GET', 'POST'])
 def addpass():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -256,6 +261,11 @@ def addpass():
 
 @app.route('/manager')
 def manager():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     # Retrieve all items from the database
     items = Item.query.all()
 
@@ -283,6 +293,11 @@ def manager():
 
 @app.route('/password_generator', methods=['POST', 'GET'])
 def password_generator():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         chars = ""
         length = request.form.get('length', default = 12)
@@ -403,6 +418,11 @@ def lectures():
 
 @app.route('/phishing_1', methods=['GET', 'POST'])
 def phishing_1():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         login_email = request.form['login_email']
         login_password = request.form['login_password']
@@ -417,10 +437,20 @@ def phishing_1():
 
 @app.route('/lectures_1')
 def lecture_1():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     return render_template('lecture_1.html')
 
 @app.route('/phishing')
 def phishing():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
 
     return render_template('phishing.html')
 
@@ -434,6 +464,11 @@ def left():
 
 @app.route('/visualization', methods = ['POST', 'GET'])
 def visualization():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     hacked = False
     if request.method == 'POST':
         email = request.form.get('login_email')
@@ -444,6 +479,11 @@ def visualization():
 
 @app.route('/dns_lookup', methods=['GET', 'POST'])
 def dns_lookup():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         url = request.form.get('url')
         headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
@@ -490,6 +530,11 @@ def dns_lookup():
 
 @app.route('/link_checker', methods = ['POST', 'GET'])
 def link_checker():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         api_key = 'eb33fe8e5313e2df96a5629a911aba8722b49e897ed9d6795f1104055b97c3cc'
         url  = 'https://www.virustotal.com/vtapi/v2/url/report'
@@ -555,6 +600,11 @@ def Index():
 
 @app.route('/blacklist', methods=['GET', 'POST'])
 def blacklist():
+    email = session.get('email')
+    remember = session.get('remember')
+    if email is None:
+            if remember != True:
+                return redirect(url_for('login'))
     if request.method == 'POST':
         domain = request.form.get('mail')
         url = f"https://api.blacklistchecker.com/check/{domain}"
