@@ -14,9 +14,10 @@ import string
 from urllib.parse import urlparse
 from cryptography.fernet import Fernet, InvalidToken
 import openai
+from dotenv import load_dotenv
 
 
-
+load_dotenv()
 #2fa configuration
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -129,7 +130,7 @@ class Item(db.Model):
 def home():
     email = session.get('email')
     if email:
-        return redirect(url_for('profile'))
+        return redirect(url_for('Index'))
     return render_template('home.html')
 
 
@@ -346,17 +347,7 @@ def password_checker():
 
 
 
-@app.route('/profile', methods = ['POST', 'GET'])
-def profile():
-    
-    email = session.get('email')
-    remember = session.get('remember')
-    if email is None:
-            if remember != True:
-                return redirect(url_for('login'))
-    else:
-        user = User.query.filter_by(email=email).first()
-        return render_template('profile.html', email=email)
+
 
 
 
@@ -371,7 +362,7 @@ def verification():
     if request.method == 'POST':
         code= int(request.form['code'])
         if code == (session['code']):
-            return redirect(url_for('profile'))
+            return redirect(url_for('Index'))
         else:   
             flash('Invalid Code')
             return render_template('auth.html')
@@ -465,7 +456,7 @@ def dns_lookup():
             result_text_one = 'No results found.'
 
         result_div= None
-        return render_template('dns_lookup.htm', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+        return render_template('dns_lookup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
     return render_template('dns_lookup.html')
 
@@ -495,7 +486,7 @@ def link_checker():
 
 @app.route('/news', methods= ['POST', 'GET'])
 def Index():
-
+    
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
                                           language='en',
