@@ -215,15 +215,22 @@ def addpass():
         username = request.form['username']
         password = request.form['password']
         website = request.form['website']
+        
 
         # Encrypt the password
         encrypted_password = crypter.encrypt(password.encode())
 
+        response = requests.get(website)
+        if response.status_code == 200:
+
         # Create a new Item instance with the encrypted password
-        item = Item(username=username, user_password=encrypted_password, website=website)
-        db.session.add(item)
-        db.session.commit()
-        return redirect(url_for('manager'))
+            item = Item(username=username, user_password=encrypted_password, website=website)
+            db.session.add(item)
+            db.session.commit()
+            return redirect(url_for('manager'))
+        else:
+            message = "Invalid Website"
+            return render_template('addpass.html', message=message)
 
     return render_template('addpass.html')
 
@@ -466,7 +473,7 @@ def check_link():
     return render_template('link_checkup.html')
 
 @app.route('/news', methods= ['POST', 'GET'])
-def Index():
+def news():
 
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
