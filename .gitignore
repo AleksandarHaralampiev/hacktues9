@@ -2,3 +2,4 @@ __pycache__
 instance
 zadachi.txt
 .env
+instance/database.db
