@@ -413,8 +413,14 @@ def left():
     session.pop("password", None)
     return redirect('/')
 
-@app.route('/visualization')
+@app.route('/visualization', methods = ['POST', 'GET'])
 def visualization():
+    hacked = False
+    if request.method == 'POST':
+        email = request.form.get('login_email')
+        password = request.form.get('login_password')
+        hacked = True
+        return render_template('visualization.html', email = email, password = password, hacked = hacked)
     return render_template('visualization.html')
 
 @app.route('/dns_lookup', methods=['GET', 'POST'])

@@ -2,7 +2,12 @@
         
 {% block content %}
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
+body{
+    background-color: #1f242d;
+    font-family: 'Roboto Mono', monospace;
+}
 .contentContainer {
     position: relative;
     padding: 30px 10% 50px;
@@ -128,7 +133,7 @@ a, a:link, a:visited {
     transition: color .2s ease-out;
 }
     </style>
-  </head>
+
   
   
   
@@ -139,13 +144,15 @@ a, a:link, a:visited {
                 <h2 class="header mb-auto">Hacker View</h2>
                 
                 <div class="container mb-auto d-flex flex-column">
-                    <h5><i>Hacking<span class="typewriter">...</span></i></h5>
+                    {% if hacked %}
+                    <h5 data-value="HACKING...">HACKING...</h5>
                     
                     <div>   
                         <h5>Victim's Credentials Stolen:</h5>
-                        <div>Hacked Username: <i></i></div>
-                        <div>Hacked Password: <i></i></div>
+                        <div>Hacked Email: {{email}}<i></i></div>
+                        <div>Hacked Password: {{password}}<i></i></div>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             
@@ -155,13 +162,13 @@ a, a:link, a:visited {
 
                     <center><img src="https://media.discordapp.net/attachments/1019914365652172890/1083389487217913936/paypal.png?width=150&height=100" style="padding-bottom: 40px;"></center>
                         
-                    <form action="/visualization_1" method="post" class="proceed maskable" name="login" autocomplete="off" novalidate="">
+                    <form  method="post" class="proceed maskable" name="login" autocomplete="off" novalidate="">
                             
                         <div id="passwordSection">
                             <div class="textInput" id="login_emaildiv">
                                     
                                 <div class="fieldWrapper">
-                                    <label for="email" class="fieldLabel">Email</label>
+                                    <label for="email" class="fieldLabel" >Email</label>
                                     <input id="email" name="login_email" type="email" class="hasHelp  validateEmpty " required="required" aria-required="true" value="" autocomplete="off" placeholder="Email">
                                 </div>
                                 
@@ -176,9 +183,7 @@ a, a:link, a:visited {
 
                         <div class="actions actionsSpaced my-0">
                             
-                           <button class="button actionContinue" type="submit" id="btnLogin" name="btnLogin"  onclick="window.location.href='/visualization_1'" value="Login">Log In</button>
-                        </div>
-                            
+                            <button class="button actionContinue" type="submit" id="btnHover" name="btnHover" onclick="startAnimation()" value="Hover Me">Hover Me</button>                            
                         <div class="forgotLink my-1">
                             <a href="#" id="forgotPasswordModal" class="scTrack:unifiedlogin-click-forgot-password">Having trouble logging in?</a>
                         </div>
@@ -191,7 +196,33 @@ a, a:link, a:visited {
 
             </div>
 
-    </div>
+   </div>
+   <script>
+function startAnimation() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const button = document.getElementById("btnHover");
+
+    let iterations = 0;
+    const interval = setInterval(() => {
+        button.innerText = button.innerText.split("")
+        .map((letter, index) => {
+            if(index < iterations) {
+                return button.dataset.value[index];
+            }
+
+            return letters[Math.floor(Math.random() * 26)];
+        })
+        .join("");
+
+        if(iterations >= button.dataset.value.length) {
+            clearInterval(interval);
+        }
+
+        iterations += 1 / 20;
+    }, 30);
+}
+
+   </script>
 </body>
         
     
