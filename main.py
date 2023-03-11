@@ -459,7 +459,7 @@ def dns_lookup():
             result_text_one = 'No results found.'
 
         result_div= None
-        return render_template('dns_lookup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+        return render_template('dns_lookup.htm', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
     return render_template('dns_lookup.html')
 
@@ -560,3 +560,4 @@ def blacklist():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
