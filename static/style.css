@@ -310,11 +310,16 @@ canvas {
     border-radius: 8px;
   }
 
-
+  .pass-gen .input-field{
+    background: #1f242d;
+    color: white;
+    box-shadow: 0 0 5px #000000;
+  }
 
 
   .pass-gen:hover .input-field{
-    border: 2px solid #0ef;
+    border: 2px solid #0ef !important;
+    box-shadow: 0 0 5px #2ef;
   }
 
   .chatbox__support {
@@ -418,4 +423,11 @@ canvas {
     border-bottom-left-radius: 50px;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+}
+
+
+
+.col-card{
+    background: #1f242d !important; 
+    box-shadow: 0 0 10px #000000;
 }
