@@ -1,5 +1,3 @@
-# imports
-
 from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
@@ -131,7 +129,7 @@ class Item(db.Model):
 def home():
     email = session.get('email')
     if email:
-        return redirect(url_for('news'))
+        return redirect(url_for('profile'))
     return render_template('home.html')
 
 
@@ -215,22 +213,15 @@ def addpass():
         username = request.form['username']
         password = request.form['password']
         website = request.form['website']
-        
 
         # Encrypt the password
         encrypted_password = crypter.encrypt(password.encode())
 
-        response = requests.get(website)
-        if response.status_code == 200:
-
         # Create a new Item instance with the encrypted password
-            item = Item(username=username, user_password=encrypted_password, website=website)
-            db.session.add(item)
-            db.session.commit()
-            return redirect(url_for('manager'))
-        else:
-            message = "Invalid Website"
-            return render_template('addpass.html', message=message)
+        item = Item(username=username, user_password=encrypted_password, website=website)
+        db.session.add(item)
+        db.session.commit()
+        return redirect(url_for('manager'))
 
     return render_template('addpass.html')
 
@@ -380,7 +371,7 @@ def verification():
     if request.method == 'POST':
         code= int(request.form['code'])
         if code == (session['code']):
-            return redirect(url_for('news'))
+            return redirect(url_for('profile'))
         else:   
             flash('Invalid Code')
             return render_template('auth.html')
@@ -426,8 +417,8 @@ def left():
 def visualization():
     return render_template('visualization.html')
 
-@app.route('/dnslookup', methods=['GET', 'POST'])
-def dnslookup():
+@app.route('/dns_lookup', methods=['GET', 'POST'])
+def dns_lookup():
     if request.method == 'POST':
         url = request.form.get('url')
         headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
@@ -472,8 +463,32 @@ def dnslookup():
 
     return render_template('dns_lookup.html')
 
+@app.route('/link_checker', methods = ['POST', 'GET'])
+def link_checker():
+    if request.method == 'POST':
+        api_key = 'eb33fe8e5313e2df96a5629a911aba8722b49e897ed9d6795f1104055b97c3cc'
+        url  = 'https://www.virustotal.com/vtapi/v2/url/report'
+        website = request.form.get('url')
+        if website is None:
+            return render_template('link_checker.html')
+        params = {'apikey': api_key, 'resource': website}
+        response = requests.get(url, params=params)
+        response_json = json.loads(response.content)
+        if response_json['positives'] <= 0:
+            message = "Safe"
+            return render_template('link_checker.html', message=message)
+        if response_json['positives'] >= 3:
+            message = "Not Sure"
+            return render_template('link_checker.html', message=message)
+        if response_json['positives'] >= 4:
+            message = "Malicious"
+            return render_template('link_checker.html', message=message)
+    else:
+        return render_template('link_checker.html')
+    
+
 @app.route('/news', methods= ['POST', 'GET'])
-def news():
+def Index():
 
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
@@ -521,7 +536,7 @@ def blacklist():
 
         headers = {
             "Content-Type": "application/json",
-            "Authorization": "Basic a2V5X3BQem1vN2t1RVhTSFBYeXowUmtKZGY2Z246"
+            "Authorization": "Basic a2V5X3lsRndsV0JrV3dFSEZCSmM3Z2ZHU252aDA="
         }
 
         response = requests.request("GET", url, headers=headers)
@@ -545,4 +560,3 @@ def blacklist():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
