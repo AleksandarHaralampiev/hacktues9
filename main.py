@@ -426,8 +426,8 @@ def left():
 def visualization():
     return render_template('visualization.html')
 
-@app.route('/dnslookup', methods=['GET', 'POST'])
-def dnslookup():
+@app.route('/linkcheckup', methods=['GET', 'POST'])
+def check_link():
     if request.method == 'POST':
         url = request.form.get('url')
         headers = {'x-api-key' : 'af40ee35-089b-426a-a6db-f00bf4fc1ffb'}
@@ -468,9 +468,9 @@ def dnslookup():
             result_text_one = 'No results found.'
 
         result_div= None
-        return render_template('dns_lookup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
+        return render_template('link_checkup.html', url=url, result=result_text, result_one = result_text_one, txt_result = result_txt_output )
 
-    return render_template('dns_lookup.html')
+    return render_template('link_checkup.html')
 
 @app.route('/news', methods= ['POST', 'GET'])
 def news():
@@ -545,4 +545,3 @@ def blacklist():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
