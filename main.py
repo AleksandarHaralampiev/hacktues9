@@ -21,7 +21,7 @@ import openai
 
 #2fa configuration
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 INSTRUCTIONS = """You are an AI assistant that is a cybersecurity expert.
 You know all about the different cyber attacks and cyber protection.
@@ -350,14 +350,7 @@ def password_checker():
 
 @app.route('/profile', methods = ['POST', 'GET'])
 def profile():
-    if request.method == 'POST':
-        question = request.form.get('question')
-        if not question:
-            return render_template('profile.html')
-        answer = get_answer(question)
-        if question and answer:
-            return render_template('profile.html', question = question, answer=answer)
-    else :return render_template('profile.html')
+    
     email = session.get('email')
     remember = session.get('remember')
     if email is None:
@@ -472,8 +465,9 @@ def dnslookup():
 
     return render_template('dns_lookup.html')
 
-@app.route('/news')
-def news():
+@app.route('/news', methods= ['POST', 'GET'])
+def Index():
+
     newsapi = NewsApiClient(api_key='edec7dc4223146d2bcac02d1555fc925')
     topheadlines = newsapi.get_everything(q='cybersecurity',
                                           language='en',
@@ -502,8 +496,45 @@ def news():
 
     mylist = zip(news, desc, link, img)
 
-
+    if request.method == 'POST':
+        question = request.form.get('question')
+        if not question:
+            return render_template('news.html', context = mylist)
+        answer = get_answer(question)
+        if question and answer:
+            return render_template('news.html', question = question, answer=answer, context = mylist)
+    else :return render_template('news.html', context = mylist)
     return render_template('news.html', context = mylist)
+
+@app.route('/blacklist', methods=['GET', 'POST'])
+def blacklist():
+    if request.method == 'POST':
+        domain = request.form.get('mail')
+        url = f"https://api.blacklistchecker.com/check/{domain}"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Basic a2V5X3BQem1vN2t1RVhTSFBYeXowUmtKZGY2Z246"
+        }
+
+        response = requests.request("GET", url, headers=headers)
+        data = response.json()
+
+        blacklisting = []
+        names = []
+
+        for item in data['blacklists']:
+            names.append(item['name'])
+            if item['detected'] == 'false':
+                blacklisting.append('Blacklisted')
+            else:
+                blacklisting.append('Not blacklisted')
+
+        package = zip(blacklisting, names)
+
+        return render_template('blacklist.html', package=package)
+
+    return render_template('blacklist.html', package=None)
 
 if __name__ == "__main__":
     app.run(debug=True)
