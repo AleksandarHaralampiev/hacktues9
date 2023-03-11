@@ -205,7 +205,7 @@ def login():
         session['code'] = code  # store code in session
 
         subject = 'Verification Code'
-        body = f'Your verification code is \n{code}'
+        body = f'Your verification code is: \n----------\n{code}\n----------'
 
         em = EmailMessage()
         em['From'] = email_sender
