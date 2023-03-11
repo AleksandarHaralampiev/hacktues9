@@ -131,7 +131,7 @@ class Item(db.Model):
 def home():
     email = session.get('email')
     if email:
-        return redirect(url_for('profile'))
+        return redirect(url_for('news'))
     return render_template('home.html')
 
 
@@ -373,7 +373,7 @@ def verification():
     if request.method == 'POST':
         code= int(request.form['code'])
         if code == (session['code']):
-            return redirect(url_for('profile'))
+            return redirect(url_for('news'))
         else:   
             flash('Invalid Code')
             return render_template('auth.html')
@@ -505,6 +505,36 @@ def Index():
             return render_template('news.html', question = question, answer=answer, context = mylist)
     else :return render_template('news.html', context = mylist)
     return render_template('news.html', context = mylist)
+
+@app.route('/blacklist', methods=['GET', 'POST'])
+def blacklist():
+    if request.method == 'POST':
+        domain = request.form.get('mail')
+        url = f"https://api.blacklistchecker.com/check/{domain}"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Basic a2V5X3BQem1vN2t1RVhTSFBYeXowUmtKZGY2Z246"
+        }
+
+        response = requests.request("GET", url, headers=headers)
+        data = response.json()
+
+        blacklisting = []
+        names = []
+
+        for item in data['blacklists']:
+            names.append(item['name'])
+            if item['detected'] == 'false':
+                blacklisting.append('Blacklisted')
+            else:
+                blacklisting.append('Not blacklisted')
+
+        package = zip(blacklisting, names)
+
+        return render_template('blacklist.html', package=package)
+
+    return render_template('blacklist.html', package=None)
 
 if __name__ == "__main__":
     app.run(debug=True)
