@@ -1,18 +1,25 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-transparent mb-auto">
+<nav class="navbar navbar-expand-lg navbar-dark bg-transparent mb-auto w-100">
+  
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+    
+    
+    <a class="navbar-brand me-auto" href="{{url_for('home')}}">
       <img src="../static/images/logo.png" height="40px">
       <span class="mx-0">Data Exotica</span>
     </a>
 
+    
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    
+    
+    <div class="collapse navbar-collapse ms-2" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
-          <a class="nav-link " href="{{url_for('Index')}}" id="navbarDropdownPasswords" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link" href="{{url_for('Index')}}" id="navbarDropdownPasswords" role="button"  aria-expanded="false">
             News
           </a>
         </li>
@@ -51,5 +58,8 @@
         </li>
       </ul>
     </div>
+  
+  
   </div>
+
 </nav>
