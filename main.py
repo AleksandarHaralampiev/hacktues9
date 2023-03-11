@@ -19,7 +19,7 @@ import openai
 
 #2fa configuration
 
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 INSTRUCTIONS = """You are an AI assistant that is a cybersecurity expert.
 You know all about the different cyber attacks and cyber protection.
