@@ -12,13 +12,34 @@
           <div class="card-body">
             <a class="card-title text-dark" href="{{ item.website }}" target="_blank" style="font-size: 20px; text-decoration: none;">{{ item.website }}</a>
             <h4 class="card-text text-dark">Username/Email: {{ item.username }}</h4>
-            <h4 class="card-text text-dark" type="password">Password: {{ item.password }}</h4>
-            <a href="#" class="btn btn-primary">View</a>
+            <div class="password-field">
+              <h4 class="card-text text-dark">Password: <span class="password-hidden">********</span><span class="password-visible" style="display:none">{{ item.password }}</span></h4>
+            </div>
+            <button type="button" class="btn btn-primary view-password-btn">View</button>
           </div>
         </div>
         <br>
       </div>
     {% endfor %}
   </div>
+
+  <script>
+    const viewPasswordBtns = document.querySelectorAll('.view-password-btn');
+    viewPasswordBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const passwordField = btn.previousElementSibling.querySelector('.password-hidden');
+        const password = passwordField.nextElementSibling.innerText;
+        if (passwordField.classList.contains('password-visible')) {
+          passwordField.innerText = '********';
+          passwordField.classList.remove('password-visible');
+          btn.innerText = 'View';
+        } else {
+          passwordField.innerText = password;
+          passwordField.classList.add('password-visible');
+          btn.innerText = 'Hide';
+        }
+      });
+    });
+  </script>
   
 {% endblock %}
